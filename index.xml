@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>极东夜狗之巢穴</title>
-    <link>http://example.org/</link>
+    <link>https://nightdogc.github.io/</link>
     <description>Recent content on 极东夜狗之巢穴</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Sat, 29 Oct 2022 18:01:59 +0800</lastBuildDate>
     
-	<atom:link href="http://example.org/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://nightdogc.github.io/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>First</title>
-      <link>http://example.org/posts/first/</link>
+      <link>https://nightdogc.github.io/posts/first/</link>
       <pubDate>Sat, 29 Oct 2022 18:01:59 +0800</pubDate>
       
-      <guid>http://example.org/posts/first/</guid>
+      <guid>https://nightdogc.github.io/posts/first/</guid>
       <description></description>
     </item>
     
