@@ -1,14 +1,15 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
   <channel>
-    <title>Categories on 极东夜狗之巢穴</title>
+    <title>Categories - Category - 极东夜狗之巢穴</title>
     <link>/categories/</link>
-    <description>Recent content in Categories on 极东夜狗之巢穴</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>zh-CN</language>
-    
-	<atom:link href="/categories/index.xml" rel="self" type="application/rss+xml" />
-    
-    
-  </channel>
+    <description>Categories - Category - 极东夜狗之巢穴</description>
+    <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Sat, 29 Oct 2022 18:01:59 &#43;0800</lastBuildDate><atom:link href="/categories/" rel="self" type="application/rss+xml" /><item>
+  <title>test1</title>
+  <link>/categories/test1/</link>
+  <pubDate>Sat, 29 Oct 2022 18:01:59 &#43;0800</pubDate>
+  <author>Author</author>
+  <guid>/categories/test1/</guid>
+  <description><![CDATA[]]></description>
+</item>
+</channel>
 </rss>

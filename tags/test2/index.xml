@@ -1,0 +1,26 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+  <channel>
+    <title>test2 - Tag - 极东夜狗之巢穴</title>
+    <link>/tags/test2/</link>
+    <description>test2 - Tag - 极东夜狗之巢穴</description>
+    <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Sat, 29 Oct 2022 18:01:59 &#43;0800</lastBuildDate><atom:link href="/tags/test2/" rel="self" type="application/rss+xml" /><item>
+  <title>First</title>
+  <link>/posts/first/</link>
+  <pubDate>Sat, 29 Oct 2022 18:01:59 &#43;0800</pubDate>
+  <author>NightDog</author>
+  <guid>/posts/first/</guid>
+  <description><![CDATA[123 456 this is a quote code block
+dsfsd sdf fsdf
+ddd sds ddd quote in quote
+dc 1 123
+2 345
+3 345
+4 345
+4.1 456
+4.2 456
+4.3 456
+dddf 456
+??? !!! ]]></description>
+</item>
+</channel>
+</rss>
