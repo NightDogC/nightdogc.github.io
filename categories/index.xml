@@ -4,6 +4,14 @@
         <link>/categories/</link>
         <description>Categories - Category - 极东夜狗之巢穴</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Sat, 29 Oct 2022 18:01:59 &#43;0800</lastBuildDate><atom:link href="/categories/" rel="self" type="application/rss+xml" /><item>
+    <title>Other</title>
+    <link>/categories/other/</link>
+    <pubDate>Sat, 29 Oct 2022 18:01:59 &#43;0800</pubDate>
+    <author>Author</author>
+    <guid>/categories/other/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
     <title>test1</title>
     <link>/categories/test1/</link>
     <pubDate>Sat, 29 Oct 2022 18:01:59 &#43;0800</pubDate>

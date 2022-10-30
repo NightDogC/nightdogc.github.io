@@ -19,7 +19,16 @@
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="/" /><link rel="alternate" href="/index.xml" type="application/rss+xml" title="极东夜狗之巢穴">
     <link rel="feed" href="/index.xml" type="application/rss+xml" title="极东夜狗之巢穴"><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
         <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript>
+<link rel="stylesheet" href="/js/katex/katex.min.css" >
+<script src="/js/katex/katex.min.js" > </script>
+<script src="/js/katex/contrib/auto-render.min.js" ></script>
+ 
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+      renderMathInElement(document.body);
+    });
+</script><script type="application/ld+json">
     {
         "@context": "http://schema.org",
         "@type": "WebSite",
@@ -34,7 +43,7 @@
             <a href="/" title="极东夜狗之巢穴">My cool site</a>
         </div>
         <div class="menu">
-            <div class="menu-inner"><a class="menu-item" href="/post/"> 主页 </a><a class="menu-item" href="/quickpost/"> 查询精神状态 </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 归档 </a><a class="menu-item active" href="/"> Unreal学习笔记 </a><a class="menu-item active" href="/"> 游戏设计相关 </a><a class="menu-item active" href="/"> 其它游戏开发相关 </a><a class="menu-item active" href="/"> 其它的其它 </a><a class="menu-item" href="/quickpost/"> 查询精神状态 </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
                     <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
                 </a></div>
         </div>
@@ -49,44 +58,27 @@
                 <span></span><span></span><span></span>
             </div>
         </div>
-        <div class="menu" id="menu-mobile"><a class="menu-item" href="/post/" title="">主页</a><a class="menu-item" href="/quickpost/" title="">查询精神状态</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+        <div class="menu" id="menu-mobile"><a class="menu-item" href="/posts/" title="">归档</a><a class="menu-item" href="/" title="">Unreal学习笔记</a><a class="menu-item" href="/" title="">游戏设计相关</a><a class="menu-item" href="/" title="">其它游戏开发相关</a><a class="menu-item" href="/" title="">其它的其它</a><a class="menu-item" href="/quickpost/" title="">查询精神状态</a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
                 <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
             </a></div>
     </div>
 </header><main class="main">
                 <div class="container"><div class="page home" data-home="posts"><div class="home-profile"><div class="home-subtitle"><div id="id-1" class="typeit"></div></div><div class="links"></div></div>
 <article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
-        <a href="/posts/first/">First</a>
-    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>NightDog</a></span>&nbsp;<span class="post-publish">published on <time datetime="2022-10-29">2022-10-29</time></span>&nbsp;<span class="post-category">included in <a href="/categories/test1/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>test1</a></span></div><div class="content">行内公式: 公式块:
-123
-456
-???? this is a quote code block
-dsfsd sdf fsdf
-ddd sds ddd quote in quote
-dc 1 123
-2 345
-3 345
-4 345
-4.1 456
-4.2 456
-4.3 456
-dddf 456
-??? 123123
-sdfsdf
-sdfsdf
-sdfsdf
-4.4 orz!!!!!!
-ss
-ss
-ss
-ss
-ss
-ss
-ss
-ss
-block try</div><div class="post-footer">
+        <a href="/posts/first/">内容格式参考模板</a>
+    </h1><div class="post-meta"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>NightDog</a></span>&nbsp;<span class="post-publish">published on <time datetime="2022-10-29">2022-10-29</time></span>&nbsp;<span class="post-category">included in <a href="/categories/other/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Other</a></span></div><div class="content">最基础的：斜体、加粗、粗斜体、Inline代码、删除线
+ToDo Done 一级标题 二级标题 三级标题 四级标题 引
+用
+简单代码块 有 序 列 表 无 序 列 表 嵌 套 列 表 公式：
+在markdown中使用KaTeX公式，遇到 _ * &gt;&gt; \( \) \{ \} \] \[ 在前面都需要添加转义符 \ 比较保险。
+对于 \\ ，需要写成 \\\\
+公式块：
+$$ C(n,m)=\frac{n*(n-1)*&hellip;*(n-m+1)}{m*(m-1)*&hellip;*1} $$
+$$P(A|B)=\cfrac{P(A)*P(B|A)}{P(B)}$$
+行内公式1： \(f(x)=\int_{-\infty}^{\infty} \hat{f}(\xi) e^{2 \pi i \xi x} d \xi\)
+行内公式2： \(\mathbf{E}=\sum_{i} \mathbf{E}_{i}=\mathbf{E}_{1}+\mathbf{E}_{2}+\mathbf{E}_{3}+\cdots\) 矩阵：$$\begin{matrix} 1&amp;2 \\ 3&amp;4 \\ 5&amp;6 \end{matrix} $$ $$\left\{ \begin{matrix} 1&amp;2 \\ 3&amp;4 \\ 5&amp;6 \end{matrix} \right\} $$ $$\left<sup> \begin{matrix} 1&amp;2 \\ 3&amp;4 \\ 5&amp;6 \end{matrix} \right] $$ 快速分数： [99</sup>/<sub>100</sub></div><div class="post-footer">
         <a href="/posts/first/">Read More</a><div class="post-tags">
-                <i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/test2/">test2</a></div></div>
+                <i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/other/">Other</a></div></div>
 </article></div></div>
             </main><footer class="footer">
         <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.105.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>

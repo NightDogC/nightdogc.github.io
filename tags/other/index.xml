@@ -1,0 +1,25 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>Other - Tag - 极东夜狗之巢穴</title>
+        <link>/tags/other/</link>
+        <description>Other - Tag - 极东夜狗之巢穴</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Sat, 29 Oct 2022 18:01:59 &#43;0800</lastBuildDate><atom:link href="/tags/other/" rel="self" type="application/rss+xml" /><item>
+    <title>内容格式参考模板</title>
+    <link>/posts/first/</link>
+    <pubDate>Sat, 29 Oct 2022 18:01:59 &#43;0800</pubDate>
+    <author>NightDog</author>
+    <guid>/posts/first/</guid>
+    <description><![CDATA[最基础的：斜体、加粗、粗斜体、Inline代码、删除线
+ToDo Done 一级标题 二级标题 三级标题 四级标题 引
+用
+简单代码块 有 序 列 表 无 序 列 表 嵌 套 列 表 公式：
+在markdown中使用KaTeX公式，遇到 _ * &gt;&gt; \( \) \{ \} \] \[ 在前面都需要添加转义符 \ 比较保险。
+对于 \\ ，需要写成 \\\\
+公式块：
+$$ C(n,m)=\frac{n*(n-1)*&hellip;*(n-m+1)}{m*(m-1)*&hellip;*1} $$
+$$P(A|B)=\cfrac{P(A)*P(B|A)}{P(B)}$$
+行内公式1： \(f(x)=\int_{-\infty}^{\infty} \hat{f}(\xi) e^{2 \pi i \xi x} d \xi\)
+行内公式2： \(\mathbf{E}=\sum_{i} \mathbf{E}_{i}=\mathbf{E}_{1}+\mathbf{E}_{2}+\mathbf{E}_{3}+\cdots\) 矩阵：$$\begin{matrix} 1&amp;2 \\ 3&amp;4 \\ 5&amp;6 \end{matrix} $$ $$\left\{ \begin{matrix} 1&amp;2 \\ 3&amp;4 \\ 5&amp;6 \end{matrix} \right\} $$ $$\left<sup> \begin{matrix} 1&amp;2 \\ 3&amp;4 \\ 5&amp;6 \end{matrix} \right] $$ 快速分数： [99</sup>/<sub>100</sub>]]></description>
+</item>
+</channel>
+</rss>
