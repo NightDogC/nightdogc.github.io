@@ -3,11 +3,11 @@
         <title>Tags - Tag - 极东夜狗之巢穴</title>
         <link>/tags/</link>
         <description>Tags - Tag - 极东夜狗之巢穴</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Sat, 29 Oct 2022 18:01:59 &#43;0800</lastBuildDate><atom:link href="/tags/" rel="self" type="application/rss+xml" /><item>
+        <generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Sat, 29 Oct 2022 18:01:59 &#43;0800</lastBuildDate><atom:link href="/tags/" rel="self" type="application/rss+xml" /><item>
     <title>Other</title>
     <link>/tags/other/</link>
     <pubDate>Sat, 29 Oct 2022 18:01:59 &#43;0800</pubDate>
-    <author>Author</author>
+    <author>NightDogC</author>
     <guid>/tags/other/</guid>
     <description><![CDATA[]]></description>
 </item>
@@ -15,7 +15,7 @@
     <title>test2</title>
     <link>/tags/test2/</link>
     <pubDate>Sat, 29 Oct 2022 18:01:59 &#43;0800</pubDate>
-    <author>Author</author>
+    <author>NightDogC</author>
     <guid>/tags/test2/</guid>
     <description><![CDATA[]]></description>
 </item>
