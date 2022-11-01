@@ -24,7 +24,11 @@
  
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-      renderMathInElement(document.body);
+        let hasContent = document.getElementsByClassName('toc')[0].getAttribute('class');
+        if (hasContent == null) {
+            return;
+        }
+        renderMathInElement(document.body);
     });
 </script></head>
     <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>

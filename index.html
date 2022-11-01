@@ -26,7 +26,11 @@
  
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-      renderMathInElement(document.body);
+        let hasContent = document.getElementsByClassName('toc')[0].getAttribute('class');
+        if (hasContent == null) {
+            return;
+        }
+        renderMathInElement(document.body);
     });
 </script><script type="application/ld+json">
     {

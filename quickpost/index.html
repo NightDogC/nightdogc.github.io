@@ -26,7 +26,11 @@
  
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-      renderMathInElement(document.body);
+        let hasContent = document.getElementsByClassName('toc')[0].getAttribute('class');
+        if (hasContent == null) {
+            return;
+        }
+        renderMathInElement(document.body);
     });
 </script><script type="application/ld+json">
     {
@@ -115,7 +119,7 @@
 				  meta: ["nick","mail","link"],
 		    	  requiredMeta: ["nick","mail"],
 		    	  login: "force",
-				  placeholder: "如有任何问题，可联系nightdogckw@gmail.com",
+				  placeholder: "评论不会即时显示，建议优先考虑email联系博主：nightdogckw@gmail.com",
 		    	  serverURL: "https://practice-makes-more-dishes-3q1cdygi5-practicemoredishes.vercel.app/",
 		    	  avatarCDN: "https://sdn.geekzu.org/avatar/",
 		    	  pageSize:  20 ,
@@ -123,7 +127,8 @@
 		    	  lang:  null ,
 				  visitor:  null ,
 				  highlight:  true ,
-				  uploadImage:  false 				  
+				  uploadImage:  false ,		
+                  wordLimit:  1000 		  
 		    	});
 		    </script></div>
     </div></div>
