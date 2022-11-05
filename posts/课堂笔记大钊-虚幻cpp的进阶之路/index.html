@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>【课堂笔记】大钊-虚幻Cpp的进阶之路 - 极东夜狗之巢穴</title><meta name="Description" content="Unreal Engine, Unity3D, Game Design, Game Development"><meta property="og:title" content="【课堂笔记】大钊-虚幻Cpp的进阶之路" />
+<meta property="og:description" content="本次笔记的课程为 大钊-虚幻C&#43;&#43;的进阶之路 里面简单介绍了一下UnrealC&#43;&#43;的学习路径、Module-UBT-C#相关、反射-UHT相关、" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/posts/%E8%AF%BE%E5%A0%82%E7%AC%94%E8%AE%B0%E5%A4%A7%E9%92%8A-%E8%99%9A%E5%B9%BBcpp%E7%9A%84%E8%BF%9B%E9%98%B6%E4%B9%8B%E8%B7%AF/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-11-05T21:41:02+08:00" />
+<meta property="article:modified_time" content="2022-11-05T21:41:02+08:00" /><meta property="og:site_name" content="极东夜狗之巢穴" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="【课堂笔记】大钊-虚幻Cpp的进阶之路"/>
+<meta name="twitter:description" content="本次笔记的课程为 大钊-虚幻C&#43;&#43;的进阶之路 里面简单介绍了一下UnrealC&#43;&#43;的学习路径、Module-UBT-C#相关、反射-UHT相关、"/>
+<meta name="application-name" content="My cool site">
+<meta name="apple-mobile-web-app-title" content="My cool site"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="/posts/%E8%AF%BE%E5%A0%82%E7%AC%94%E8%AE%B0%E5%A4%A7%E9%92%8A-%E8%99%9A%E5%B9%BBcpp%E7%9A%84%E8%BF%9B%E9%98%B6%E4%B9%8B%E8%B7%AF/" /><link rel="prev" href="/posts/unreal-nuggets%E4%B8%AA%E4%BA%BA%E5%90%91%E8%93%9D%E5%9B%BE%E6%8B%BE%E9%81%97/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript>
+<link rel="stylesheet" href="/js/katex/katex.min.css" >
+<script src="/js/katex/katex.min.js" > </script>
+<script src="/js/katex/contrib/auto-render.min.js" ></script>
+ 
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        let hasContent = document.getElementsByClassName('toc')[0].getAttribute('class');
+        if (hasContent == null) {
+            return;
+        }
+        renderMathInElement(document.body);
+    });
+</script><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "【课堂笔记】大钊-虚幻Cpp的进阶之路",
+        "inLanguage": "zh-cn",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "\/posts\/%E8%AF%BE%E5%A0%82%E7%AC%94%E8%AE%B0%E5%A4%A7%E9%92%8A-%E8%99%9A%E5%B9%BBcpp%E7%9A%84%E8%BF%9B%E9%98%B6%E4%B9%8B%E8%B7%AF\/"
+        },"genre": "posts","keywords": "Unreal, C\u002b\u002b, 笔记, 学习路径, 模块, 软引用, 资源加载","wordcount":  8817 ,
+        "url": "\/posts\/%E8%AF%BE%E5%A0%82%E7%AC%94%E8%AE%B0%E5%A4%A7%E9%92%8A-%E8%99%9A%E5%B9%BBcpp%E7%9A%84%E8%BF%9B%E9%98%B6%E4%B9%8B%E8%B7%AF\/","datePublished": "2022-11-05T21:41:02+08:00","dateModified": "2022-11-05T21:41:02+08:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "NightDog"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="极东夜狗之巢穴">极东夜狗之巢穴</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner">
+	                	<div class="dropdown">
+		                  	<a href="/posts/" class="menu-item menu-more dropbtn" title="" ><i class='fas fa-fw fa-archive'></i> 归档 
+		                	</a>
+		                	<div class="menu-more-content dropdown-content"><a href="/categories/" title="" ><i class='fas fa-fw fa-th'></i> 全部分类 </a><a href="/tags/" title="" ><i class='fas fa-fw fa-tag'></i> 所有标签 </a></div>
+		                </div>
+	                <a class="menu-item" href="/categories/unreal/"> Unreal学习笔记 
+		                </a>
+	                	<div class="dropdown">
+		                  	<a href="/categories/game/" class="menu-item menu-more dropbtn" title="" > 其他游戏相关 
+		                	</a>
+		                	<div class="menu-more-content dropdown-content"><a href="/categories/gamedesign/" title="" > 游戏设计相关 </a><a href="/categories/gamedev" title="" > 游戏开发相关 </a><a href="/categories/gamereview/" title="" > 游戏评论 </a><a href="/categories/personalwork" title="" > 个人游戏作品 </a></div>
+		                </div>
+	                <a class="menu-item" href="/categories/dev/"> 其它开发相关 
+		                </a>
+	                	<div class="dropdown">
+		                  	<a href="/categories/other/" class="menu-item menu-more dropbtn" title="" > 其它的其它 
+		                	</a>
+		                	<div class="menu-more-content dropdown-content"><a href="/categories/meme/" title="" > 弔图一堆 </a><a href="/categories/ramble" title="" > 杂谈一堆 </a></div>
+		                </div>
+	                <a class="menu-item" href="/quickpost/"> 查询精神状态 
+		                </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="极东夜狗之巢穴">极东夜狗之巢穴</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div>
+                <div class="dropdown">
+                      <a href="/posts/" class="menu-item menu-more dropbtn" title="" ><i class='fas fa-fw fa-archive'></i> 归档 
+                    </a>
+                    <div class="menu-more-content dropdown-content"><a href="/categories/" title="" ><i class='fas fa-fw fa-th'></i> 全部分类 </a><a href="/tags/" title="" ><i class='fas fa-fw fa-tag'></i> 所有标签 </a></div>
+                </div>
+            <a class="menu-item" href="/categories/unreal/"> Unreal学习笔记 
+                </a>
+                <div class="dropdown">
+                      <a href="/categories/game/" class="menu-item menu-more dropbtn" title="" > 其他游戏相关 
+                    </a>
+                    <div class="menu-more-content dropdown-content"><a href="/categories/gamedesign/" title="" > 游戏设计相关 </a><a href="/categories/gamedev" title="" > 游戏开发相关 </a><a href="/categories/gamereview/" title="" > 游戏评论 </a><a href="/categories/personalwork" title="" > 个人游戏作品 </a></div>
+                </div>
+            <a class="menu-item" href="/categories/dev/"> 其它开发相关 
+                </a>
+                <div class="dropdown">
+                      <a href="/categories/other/" class="menu-item menu-more dropbtn" title="" > 其它的其它 
+                    </a>
+                    <div class="menu-more-content dropdown-content"><a href="/categories/meme/" title="" > 弔图一堆 </a><a href="/categories/ramble" title="" > 杂谈一堆 </a></div>
+                </div>
+            <a class="menu-item" href="/quickpost/"> 查询精神状态 
+                </a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">【课堂笔记】大钊-虚幻Cpp的进阶之路</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>NightDog</a></span>&nbsp;<span class="post-category">included in <a href="/categories/unreal/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Unreal</a></span>&nbsp;with tags:&nbsp;<i class="fas fa-tags fa-fw" aria-hidden="true"></i><a href="/tags/unreal/">Unreal</a>,&nbsp;<a href="/tags/c&#43;&#43;/">C&#43;&#43;</a>,&nbsp;<a href="/tags/%E7%AC%94%E8%AE%B0/">笔记</a>,&nbsp;<a href="/tags/%E5%AD%A6%E4%B9%A0%E8%B7%AF%E5%BE%84/">学习路径</a>,&nbsp;<a href="/tags/%E6%A8%A1%E5%9D%97/">模块</a>,&nbsp;<a href="/tags/%E8%BD%AF%E5%BC%95%E7%94%A8/">软引用</a>,&nbsp;<a href="/tags/%E8%B5%84%E6%BA%90%E5%8A%A0%E8%BD%BD/">资源加载</a></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-11-05">2022-11-05</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;8817 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;18 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#什么是虚幻c">什么是虚幻C++</a>
+      <ul>
+        <li><a href="#学会虚幻c的标志是什么">学会虚幻C++的标志是什么？</a></li>
+      </ul>
+    </li>
+    <li><a href="#为什么虚幻要开放c来编写gameplay">为什么虚幻要开放C++来编写Gameplay</a>
+      <ul>
+        <li><a href="#虚幻c与蓝图">虚幻C++与蓝图？</a></li>
+      </ul>
+    </li>
+    <li><a href="#虚幻c有哪些要点">虚幻C++有哪些要点</a>
+      <ul>
+        <li><a href="#gameplay部分">Gameplay部分</a></li>
+        <li><a href="#moduleubtc">Module、UBT、C#</a>
+          <ul>
+            <li><a href="#点下build后ubt做了哪些事情">点下Build后UBT做了哪些事情</a></li>
+            <li><a href="#modulerulescs">ModuleRules.cs</a>
+              <ul>
+                <li><a href="#模块链接">模块链接</a></li>
+                <li><a href="#头文件include">头文件include</a></li>
+                <li><a href="#头文件include-模块">头文件include 模块</a></li>
+                <li><a href="#第三方库链接">第三方库链接</a></li>
+                <li><a href="#其它常用">其它常用</a></li>
+                <li><a href="#public和private包含">public和private包含</a></li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+        <li><a href="#反射uht">反射、UHT</a></li>
+        <li><a href="#coreuobject">CoreUObject</a></li>
+        <li><a href="#套路">套路</a></li>
+      </ul>
+    </li>
+    <li><a href="#虚幻c有哪些难点">虚幻C++有哪些难点</a></li>
+    <li><a href="#如何学习虚幻虚幻c">如何学习虚幻虚幻C++</a></li>
+    <li><a href="#其它的一些tips">其它的一些Tips</a>
+      <ul>
+        <li><a href="#源码剖析经验方法论">源码剖析经验方法论</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>本次笔记的课程为 <a href="https://www.bilibili.com/video/BV1C7411F7RF/" target="_blank" rel="noopener noreffer ">大钊-虚幻C++的进阶之路</a></p>
+<p>里面简单介绍了一下UnrealC++的学习路径、Module-UBT-C#相关、反射-UHT相关、对象类型相关（顺便自己摘抄了一点软引用的东西）</p>
+<p>由于内容较多，体系完整，基本上属于是摘抄PTT和发言，方便以后随时回看，后续会根据此篇写一篇针对个人的学习路径</p>
+<h2 id="什么是虚幻c">什么是虚幻C++</h2>
+<ul>
+<li>扎实的标准C++基础能力</li>
+<li>采用C++编写游戏逻辑</li>
+<li>适应虚幻引擎的底层C++框架
+<ul>
+<li>Module配置和插件的使用</li>
+<li>UBT和UHT（编译工具、头文件生成工具）</li>
+<li>掌握Core模块的C++库：FString、TArray、UE_LOG等</li>
+<li>熟悉了解掌握CoreUObject：宏、GC、序列化等</li>
+<li>熟悉C++和BP交互的方式</li>
+</ul>
+</li>
+</ul>
+<h3 id="学会虚幻c的标志是什么">学会虚幻C++的标志是什么？</h3>
+<ul>
+<li>懂得解决各种编译链接错误（常是因为Module配置出错）</li>
+<li>懂得一些常见的编写套路（CreateDefaultSubobject、UPROPERTY的标识符）</li>
+<li>理解UObject的内存管理机制，不会经常造成内存崩溃</li>
+<li>可以在源码里找到自己想要的代码块</li>
+</ul>
+<h2 id="为什么虚幻要开放c来编写gameplay">为什么虚幻要开放C++来编写Gameplay</h2>
+<ul>
+<li>更高端，更需要压榨机能</li>
+<li>更底层，更有能力优化性能</li>
+<li>更大项目，强类型语言更有能力管理项目</li>
+<li>更开放，更有灵活的定制型</li>
+<li>更易迭代，不需要时时更新接口层</li>
+<li>更相信开发者，进入了C++这个自由的领域，就得有自我负责的觉悟</li>
+<li>方便扩展功能，直达引擎的底层结构</li>
+<li>更好的性能，性能热点的优化</li>
+<li>方便调试引擎，理解引擎流程和修复bug</li>
+<li>大项目必须有某种Hold得住的语言</li>
+<li>没法实现定制化的需求</li>
+<li>游戏逻辑只能达到有限的优化</li>
+<li>项目大到一定程度就很难管理</li>
+<li>最后一点，可以更好地学习游戏引擎知识，也可以理解别人写的插件</li>
+</ul>
+<h3 id="虚幻c与蓝图">虚幻C++与蓝图？</h3>
+<ul>
+<li>官方文档中游详细介绍虚幻C++与蓝图的优劣，它们都是工具，需要学的和做的事利用工具的优势</li>
+<li>一般而言，20%核心用C++写，80%表层使用蓝图，但也不是绝对的，根据项目类型和个人技能而定</li>
+<li>大概的规则：
+<ul>
+<li>偏向引擎底层，偏向性能热点，偏向稳定的，采用C++</li>
+<li>偏向表现层，偏向经常操作的，偏向多变的，采用蓝图</li>
+</ul>
+</li>
+</ul>
+<h2 id="虚幻c有哪些要点">虚幻C++有哪些要点</h2>
+<ul>
+<li><strong>C++的基础一定需要巩固（推荐书目InsideC++ObjectModel），Unreal使用C++11，所以需要学到能够看懂别人怎么用这些东西：</strong>
+<ul>
+<li>TArray、TSet、TMap等各种容器</li>
+<li>FString、FName、FText的操作互转</li>
+<li>TSharedPtr、TSharedRef、TWeakPtr等各种智能指针</li>
+<li>有能力理解Delegate、TAttribute、TSubclassOf的机制和用法</li>
+<li>多看看设计模式，才能更好理解Unreal代码的结构</li>
+<li>多线程的知识，才能用好FRunnable等多线程同步</li>
+<li>人脑展开宏的能力（脑子里要能堆栈）</li>
+</ul>
+</li>
+<li>Core，即Engine/Source/Runtime/Core部分的内容</li>
+<li>Gameplay部分，详见InsideUE</li>
+<li>Module、UBT、C#</li>
+<li>反射、UHT</li>
+<li>CoreUObject（也在Engine/Source/Runtime/）、GC</li>
+<li>常见套路</li>
+<li>各模块的&quot;地方习俗&quot;，专攻时学习</li>
+</ul>
+<h3 id="gameplay部分">Gameplay部分</h3>
+<ul>
+<li>Gameplay的C++编写
+<ul>
+<li>Actor的创建，组装Component，BeginPlay，Tick，碰撞输入事件绑定</li>
+<li>引擎Gameplay对象的继承组织使用</li>
+<li>UObject自定义对象的组织管理（根据逻辑而定）（NewObject、CreateDefaultSubobject、SpawnActor）</li>
+<li>引擎数据对象的使用，Config，DataTable</li>
+<li>功能模块的C++层级编写（UMG、AI、动画等），注意有机结合</li>
+</ul>
+</li>
+<li>学习Egine/Class/GameFramework模块代码</li>
+</ul>
+<h3 id="moduleubtc">Module、UBT、C#</h3>
+<ul>
+<li>
+<p>Unreal使用C#来管理编译流程，深入到模块链接的时候就会接触到</p>
+<ul>
+<li>C++以一个cpp文件为一个编译单元，编译阶段时，根据include预编译指令，将包含的文件复制粘贴进来，那么1.该上哪里去找这些文件，该如何定位它们；2.然后在LINK阶段，需要怎么链接dll</li>
+<li>为了解决这两个问题，中间需要很多逻辑与配置，比如模块与模块之间要怎样做，编辑器情况下要怎么样，等等</li>
+</ul>
+<blockquote>
+<p>UE4支持众多平台，包括Windows，IOS，Android等，因此UE4为了方便你配置各个平台的参数和编译选项，简化编译流程,UE4实现了自己的一套编译系统，否则我们就得接受各个平台再单独配置一套项目之苦了。这套工具的编译流程结果，简单来说，就是你在VS里的运行，背后会运行UE4的一些命令行工具来完成编译，其他最重要的两个组件：
+UnrealBuildTool（UBT，C#）：UE4的自定义工具，来编译UE4的逐个模块并处理依赖等。我们编写的Target.cs，Build.cs都是为这个工具服务的。</p>
+<p>UnrealHeaderTool （UHT，C++）：UE4的C++代码解析生成工具，我们在代码里写的那些宏UCLASS等和#include &ldquo;*.generated.h&quot;都为UHT提供了信息来生成相应的C++反射代码。一般来说，UBT会先调用UHT会先负责解析一遍C++代码，生成相应其他代码。然后开始调用平台特定的编译工具(VisualStudio,LLVM)来编译各个模块。最后启动Editor或者是Game.</p>
+</blockquote>
+<blockquote>
+<p>优点：C#足够易读，C#足够灵活定制逻辑，C#可以动态编译，方便搜集信息，C#足够强大可以调用其他工具(如调用Git确定哪里被修改了，调用VS的编译工具等等）</p>
+<p>缺点：C#和C++混合经常搞得有些人糊涂，C++项目里混进C#没有智能提示不够友好</p>
+<p>解决：常见的错误都是这两者报出的，记住常用用法就行了，有问题再查。</p>
+<p>悄悄说，UBT用的是NMake build system</p>
+</blockquote>
+<ul>
+<li>所以常见的错误一般都是宏写错了、.h位置不对（UHT报出来的）、编译错误（UBT报出来的）</li>
+</ul>
+</li>
+<li>
+<p>学会链接模块，项目和插件可包含多个模块</p>
+</li>
+<li>
+<p>UBT调用UHT生成代码，然后调用MSBuild编译代码</p>
+</li>
+<li>
+<p>Build.cs是重点（ModuleRules.cs）</p>
+</li>
+</ul>
+<h4 id="点下build后ubt做了哪些事情">点下Build后UBT做了哪些事情</h4>
+<ul>
+<li>首先UBT会去搜集目录里面的cs文件，获得配置信息</li>
+<li>调用UHT，分析.cpp文件，根据include预编译指令和Unreal宏生成.generated.h文件（Intermediate路径下），此时如果宏没写对，这一步UHT就会报错</li>
+<li>UBT调用MSBuild，把.cpp文件和.generated.h合到一起编译一下</li>
+</ul>
+<h4 id="modulerulescs">ModuleRules.cs</h4>
+<h5 id="模块链接">模块链接</h5>
+<ul>
+<li>PublicDependencyModuleNames：
+<ul>
+<li>public链接的模块名称，最常用</li>
+<li>在自己的public和private里包含对方的public</li>
+</ul>
+</li>
+<li>PrivateDependencyModuleNames：
+<ul>
+<li>private链接的模块名称，只引用不暴露</li>
+<li>在private里包含对方的public，不扩充自己的public</li>
+</ul>
+</li>
+<li>DynamicallyLoadedModuleNames:
+<ul>
+<li>动态链接的模块名称，在runtime被ModuleManager加载，保证先编译</li>
+</ul>
+</li>
+</ul>
+<p>所谓自己的public和private就是Source文件夹里常有的Public和Private，在引擎源码部分里也可以看到</p>
+<h5 id="头文件include">头文件include</h5>
+<ul>
+<li>PublicIncludePaths：
+<ul>
+<li>public包含的路径</li>
+<li>定义自己向外暴露的public，默认”Public”和”Classes”</li>
+</ul>
+</li>
+<li>PrivateIncludePaths：
+<ul>
+<li>private包含的路径</li>
+<li>定义自己的private，给自己内部引用，默认“Private”，一般用来定义Private子目录。当然也可以路径包含Private/Sub，但这是一种方便方式。</li>
+</ul>
+</li>
+</ul>
+<h5 id="头文件include-模块">头文件include 模块</h5>
+<ul>
+<li>PublicIncludePathModuleNames：
+<ul>
+<li>public包含的模块名称，可以只写模块名称</li>
+</ul>
+</li>
+<li>PrivateIncludePathModuleNames：
+<ul>
+<li>private包含的模块名称，可以只写模块名称</li>
+</ul>
+</li>
+<li>用途：
+<ul>
+<li>只包含对方模块的.h文件，比如模板，虽然挺少见</li>
+<li>更多是动态链接，先包含头文件信息，之后加载</li>
+</ul>
+</li>
+</ul>
+<h5 id="第三方库链接">第三方库链接</h5>
+<ul>
+<li>
+<p>PublicAdditionalLibraries： 引用的第三方lib路径</p>
+</li>
+<li>
+<p>PublicSystemLibraryPaths ：引用的系统lib路径，其实也只是lib，只不过对于一些更“系统”底层的库用这个名字更友好一些</p>
+</li>
+<li>
+<p>PublicDelayLoadDLLs：延迟加载的dll</p>
+</li>
+<li>
+<p>具体怎么用，可以在引擎源码里去找找，比如AlembicLib.build.cs</p>
+</li>
+</ul>
+<h5 id="其它常用">其它常用</h5>
+<ul>
+<li>
+<p>PublicDefinitions + PrivateDefinitions ： 额外的其他C++宏定义</p>
+</li>
+<li>
+<p>Target：</p>
+<ul>
+<li>得到当前的编译目标信息</li>
+<li>Platform：平台，Win64，Android，IOS</li>
+<li>Configuration：配置， Debug， Development， Shipping</li>
+</ul>
+</li>
+</ul>
+<h5 id="public和private包含">public和private包含</h5>
+<ul>
+<li>做的游戏的项目其实无所谓，但是如果涉及到给别人用的模块或者插件就需要注意，应当只给出调用，而不要把实现暴露出去</li>
+<li>还是图比较直观：</li>
+</ul>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/image/unrealcpp/modulepublicprivate.png"
+        data-srcset="/image/unrealcpp/modulepublicprivate.png, /image/unrealcpp/modulepublicprivate.png 1.5x, /image/unrealcpp/modulepublicprivate.png 2x"
+        data-sizes="auto"
+        alt="/image/unrealcpp/modulepublicprivate.png"
+        title="Module" /></p>
+<ul>
+<li>
+<p>如果A模块public包含B模块，那么A模块中的public和private中的文件都可以include模块B的文件</p>
+</li>
+<li>
+<p>如果A模块private包含B模块，那么A模块中的public中的文件不能include模块B的文件，只有private中的文件可以include模块B的文件</p>
+</li>
+<li>
+<p>所以什么时候用public包含，什么时候用private包含？</p>
+<ul>
+<li>当你写的这个模块所包含的模块也希望给别人使用时，public包含</li>
+<li>当你写的这个模块所包含的模块不希望暴露给别人时，想让暴露的接口干净一点，private包含</li>
+</ul>
+</li>
+</ul>
+<p>总结一下，include头文件找不到的情况下，应当看看你包含的模块在Build.cs里是否有相应配置，.cpp文件include不到，看看你包含的模块在Build.cs里是否是private包含</p>
+<p>另外，一般情况下而言，Class也属于Public。</p>
+<p>所以，如果想要include一个文件，那么：</p>
+<ul>
+<li>在Class/Public/Private路径前面的一个是其模块名，需要在Build.cs里包含</li>
+<li>在Class/Public/Private路径后面的所有是你应该写在include的东西</li>
+</ul>
+<h3 id="反射uht">反射、UHT</h3>
+<ul>
+<li>理解.generated.h和gen.cpp</li>
+<li>理解MODULENAME_API的含义（常见的犯错地方），这个是用来做dll互相导出的</li>
+<li>掌握使用这些宏的含义和用法（反射的重要标记，在ObjectMarcos.h里可以看到）
+<ul>
+<li>UCLASS</li>
+<li>USTRUCT</li>
+<li>UENUM</li>
+<li>UPROPERTY</li>
+<li>UFUNCTION</li>
+<li>UINTERFACE</li>
+<li>GENERATED_BODY()</li>
+</ul>
+</li>
+<li>清晰理解类型和对象之间的关系：ClassReference Vs ObjectReference
+<ul>
+<li>Object Reference，是一个对Actor实例的引用，即其引用的类被实例化，被引用的资源也会被实例化，被引用的资源都会加载到内存中</li>
+<li>Class Reference，在C++中就是TSubclassOf&lt;&gt;，对一个UObject的class的引用，用处和TSubclassOf相同，即常用于创建对象和让美术师、设计师引用资源</li>
+<li>其实还有SoftClassReference和SoftObjectReference，这两个是指内部存储的资源路径，使用时加入还未被加载则先加载再使用，还可以用作跨关卡的Actor的引用</li>
+<li>SoftObjectReference等价于C++中的TSoftObjectPtr，引用了这个资源的路径，当无需此资源时，无需将资源加载到内存中，只要保存一个资源路径（实际上存了一个FSoftObjectPath结构体）就好，通过这个可以实现异步资源加载</li>
+<li>SoftClassReference，等价于C++中的TSoftClassPtr，与TSoftObjectPtr不同的是，TSoftClassPtr返回的是这个UObject对应的UClass*</li>
+<li>总的来说，TSoftClassPtr侧重于描述UObject的Class，一些配置扩展的class就可以用这个，比如伤害类型等，而TSoftObjectClass则引用一些
+<ul>
+<li>具体原因：
+<ul>
+<li>而TSoftObjectPtr侧重于描述某一类资源，比如静态模型、动态模型、数据表格等</li>
+<li>对于FSoftObjectPath，可以用元数据标识符 <code>meta = (AllowedClassed=&quot;Material,StaticMesh&quot;)</code> 来限定某种特定的资源</li>
+<li>但，该元数据只能筛选现有资源类型，当需要自定义继承UObject的类想用这个就没办法了，所以这时候就需要FSoftClassPath，并说明元数据标识符： <code>meta = (MetaClass = &quot;MyActor&quot;)</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>关于资源加载也是一个大篇章，这里先简单介绍一下这两个软引用</li>
+</ul>
+</li>
+<li>理解UClass*、UScriptStruct*、UField*、UFunction*、UProperty*</li>
+<li>掌握通过反射遍历对象属性、读取写入，较为常见</li>
+<li>掌握通过反射遍历对象函数并调用的方式，用的少一点</li>
+<li>通过对象找类型，通过类型找对象</li>
+<li>理解&quot;对象用类型描述，类型本身又是对象&rdquo;（C#表示确实）</li>
+</ul>
+<h3 id="coreuobject">CoreUObject</h3>
+<ul>
+<li>GC、内存管理：理解对象之间的关系，标记清扫，有一些对象是Root
+<ul>
+<li>简单来说，没被引用的对象会被清扫，想要既不被引用又不被清扫，就需要添加到Root（这就是在Unreal里自己强行写单例模式会犯的各种错之一，不添加Root被当垃圾回收了）</li>
+<li>注意只有UPROPERTY标记的才参加GC，因为要根据UPROERPTY来分析引用链，不写UPROPERTY的话请自己处理</li>
+<li>注意FMyStruct和UObject的混用，FGCObject::AddReferencedObjects</li>
+<li>不要在Unreal里写new和delete，这俩被Unreal重载了</li>
+</ul>
+</li>
+<li>CDO（ClassDefaultObject）：理解类型和对象实例化、模板
+<ul>
+<li>理解ClassDefaults作为模板的作用</li>
+<li>理解CDO在序列化中的意义和作用</li>
+<li>通过UClass::GetDefaultObject来获得CDO信息</li>
+</ul>
+</li>
+<li>Package：理解对象的相互组织方式
+<ul>
+<li>对象可以包含子对象</li>
+<li>序列化时，把一系列对象用一个对象包起来，这个对象叫做包</li>
+<li>Package也可以互相引用，根据对象的相对路径</li>
+</ul>
+</li>
+</ul>
+<h3 id="套路">套路</h3>
+<ul>
+<li>UHT的套路：宏</li>
+<li>模块链接的套路：几个常用属性.AddRange</li>
+<li>Actor创建的套路：
+<ul>
+<li>ConstructorHelpers（这属于hardcode资产，不太常用其实）</li>
+<li>CreateDefaultSubobject</li>
+<li>设置一堆属性</li>
+<li>SetupAttachment</li>
+</ul>
+</li>
+<li>Gameplay继承的套路：
+<ul>
+<li>尽量别在关卡蓝图里写逻辑</li>
+<li>想要结构良好，尽量遵循引擎结构，各司其事</li>
+<li>GI、GM、GS、PC、Pawn、PS全都继承一波带走</li>
+<li>遵循推荐结构，会发现后期扩展和支持联机有天然优势</li>
+</ul>
+</li>
+<li>C++和BP交互的套路：
+<ul>
+<li>各种标识符的使用</li>
+<li>C++定义基类写逻辑，蓝图继承进行配置时钟推荐易扩展高性能的方式</li>
+<li>蓝图函数库是个好东西</li>
+</ul>
+</li>
+<li>事件绑定的套路：
+<ul>
+<li>DELEGATE、MULTICAST_DELEGATE、EVENT、DYNAMIC</li>
+<li>Input：BindAxis、BindAction</li>
+<li>Collision：Hit、Overlap、AddDynamic</li>
+<li>Slate&amp;UMG Event：SLATE_EVENT(FOnClicked, OnClicked)</li>
+<li>FTimerManager</li>
+</ul>
+</li>
+<li>引擎常用方法的套路：
+<ul>
+<li>Engine/Class/Kismet这个路径下有很多库，有很多好东西，都是做好了的实用的功能</li>
+<li>GameplayStatics很常用，可以访问GamePlay的很多对象</li>
+<li>UKismetSystemLibrary，系统目录等功能，LineTrace</li>
+<li>UKismetMathLibrary，数学</li>
+</ul>
+</li>
+</ul>
+<h2 id="虚幻c有哪些难点">虚幻C++有哪些难点</h2>
+<ul>
+<li>C++基础</li>
+<li>数据结构算法，操作系统多线程</li>
+<li>数学基础：线性代数、向量矩阵、牛顿力学</li>
+<li>游戏开发知识基础：渲染、动画、AI</li>
+<li>项目开发经验：如何设计一个&quot;足够好&quot;的项目代码框架</li>
+<li>记住知识要点：各种宏和API</li>
+</ul>
+<h2 id="如何学习虚幻虚幻c">如何学习虚幻虚幻C++</h2>
+<ul>
+<li>学习从模仿开始，形成肌肉记忆，也知道了去哪里抄
+<ul>
+<li>模板项目，官方项目等</li>
+<li>模仿引擎源码，最权威也最节俭，缺点是首先要找得到，然后要看得懂</li>
+<li>模仿社区项目，或者搞到的其他人的插件，缺点是水平参差不齐，一般写的比较杂乱，不要被带沟里，建议多讨论交流</li>
+<li>多看一些教程文章和视频</li>
+</ul>
+</li>
+<li>勇敢尝试动手改改
+<ul>
+<li>着手微调一些地方观察变化</li>
+<li>遵循套路增加一些功能看能否做到</li>
+<li>翻翻找找.h或相关地方是否有好用的接口</li>
+</ul>
+</li>
+<li>总结规律
+<ul>
+<li>总结你发现到观察到的概念，规律，规范，注意事项</li>
+<li>用工具记录下来，在社区分享贡献</li>
+</ul>
+</li>
+<li>善于积累
+<ul>
+<li>弄个测试项目，用一个最小的场景用于测试你想理解的功能</li>
+<li>有用的代码功能块，可以用插件或函数库封装起来，在项目之间复用，形成代码资产</li>
+<li>对于概念，可以用思维导图来分析理解，理清关系和区别</li>
+<li>尝试自己画流程图，能用图表示出来才说明理解透彻</li>
+</ul>
+</li>
+<li>玩具项目实践
+<ul>
+<li>如自己做一些独立游戏项目，大大有助于自己思考项目架构</li>
+<li>用项目级实践来考验自己的掌握能力</li>
+</ul>
+</li>
+</ul>
+<h2 id="其它的一些tips">其它的一些Tips</h2>
+<ul>
+<li>
+<p>用插件来在项目间共享代码，动手编码前多想想</p>
+</li>
+<li>
+<p>变量类型尽量的偏向抽象基类，比如UStaticMeshComponent（甚至UMeshComponent，万一以后想要换成SkeletonMesh呢）和UPrimitiveComponent（TriggerActor就是用ShapeComponent变量）</p>
+</li>
+<li>
+<p>Include尽量IWYU，include what you use，加快编译速度</p>
+</li>
+<li>
+<p>善用C++前置声明，减少include依赖，加快编译</p>
+</li>
+<li>
+<p>蓝图函数库是个很有用的宝库</p>
+</li>
+<li>
+<p>C++代码里不要写数据配置！尝试数据驱动！C++-&gt;BP-&gt;DataTable</p>
+</li>
+<li>
+<p>蓝图也是要做好设计模式功能划分的，才能更好的协作</p>
+</li>
+<li>
+<p>再说一次，项目一开始就C++定义基类+蓝图继承，后面肯定会发现这很有先见之明！</p>
+</li>
+<li>
+<p>没有C++基类的蓝图类，也可以reparent基类，记得先备份！</p>
+</li>
+<li>
+<p>重构了C++基类名字，导致蓝图找不到父类？用CoreRedirects来修复（详见官方文档）</p>
+</li>
+<li>
+<p>如果可以不改引擎，尽量不改！就算编译版引擎也可以通过UObject来打洞Hack，和C++奇技淫巧来访问private成员。</p>
+</li>
+<li>
+<p>如果想好要改，在改动上下包上宏或注释标记，以后merge方便。</p>
+</li>
+<li>
+<p>一切从GEngine开始：UEngine*GEngine;	UGameEngine/UEditorEngine</p>
+<ul>
+<li>从GEngine可以开始获得Worlds，游戏播放和编辑的场景也都是个world</li>
+<li>获取游戏视口进行slate叠加或截图等</li>
+</ul>
+</li>
+<li>
+<p>GEditor对做编辑器扩展很有用：UEditorEngine* GEditor;</p>
+<ul>
+<li>可以获得当前选择Actor等有用信息</li>
+<li>可以获得当前视口</li>
+<li>可以调用编辑器功能</li>
+<li>可以获得事件回调</li>
+</ul>
+</li>
+<li>
+<p>编辑器也是个游戏，也都是各种UObject组成的，所以只要你能获取到正确的对象，就能为所欲为了！</p>
+</li>
+<li>
+<p>NewObject的背后，基本上所有的对象都存放在对象池里，意味着你能获取到任何对象。</p>
+</li>
+<li>
+<p>Actor里是可以runtime动态创建添加Component的，想想Spline，想想编辑器本质只是在跑的一个Game。</p>
+</li>
+</ul>
+<h3 id="源码剖析经验方法论">源码剖析经验方法论</h3>
+<ul>
+<li>时空观
+<ul>
+<li>时：注重时间上的先后，观察函数的调用流程，事件的触发时机</li>
+<li>空：注重数据的吞吐转换，观察信息的采集，数据的加工消化利用</li>
+<li>有时要专注考察某一方面，有时要同时拥有两种脑袋</li>
+<li>时空的交互，组成了有机的功能架构支撑，调度起资源，启动内循环，响应外部刺激</li>
+</ul>
+</li>
+<li>信息论
+<ul>
+<li>最小信息原则 = 依赖最少 = 越稳定</li>
+<li>信息本质也是能量，只有掌握了足够的信息，才有足够能量实现某些功能</li>
+<li>数据是信息，代码结构是信息，项目协作方式也是信息</li>
+</ul>
+</li>
+<li>从开始到结束
+<ul>
+<li>一开始有哪些东西？</li>
+<li>第一把点火的推力是什么？</li>
+<li>启动后自循环是那些推力？</li>
+<li>有哪些外部输入的刺激？</li>
+<li>向外部吐出了哪些数据？向外部施加了哪些力？</li>
+<li>最后剩下什么？</li>
+</ul>
+</li>
+<li>保持谦逊但不迷信
+<ul>
+<li>首先怀疑是自己太傻，最后才觉得人家写的不够好。97.34%最终会发现是自己的问题。</li>
+<li>觉得源码写得不够好，自己必须能切实的在充分理解问题区间的基础上指出错误并写出更好方案，否则没有资格批评！忌空谈！</li>
+<li>认识到引擎开发人员也是普通人，是人就会犯错。但大概率人家水平比自己高，小概率会疏忽。</li>
+<li>认识到引擎是个历史悠久的大工程，里面充满了历史馈赠的遗产、包袱和迷雾。所以很多觉得不够好的原因是历史带来的，不应该过于苛责。</li>
+</ul>
+</li>
+<li>比起好奇心更应该保持耐心！
+<ul>
+<li>常常会困惑这是干嘛的？</li>
+<li>常常会理解不了为什么这么做？有什么特殊的用意？</li>
+<li>数据用来用去，代码调来调去，感觉一团乱麻！</li>
+<li>调用链条太长，自己的脑容量堆栈不足以存储……</li>
+<li>所需的背景知识有欠缺……</li>
+<li>无人可问，孤军奋战……</li>
+<li>直面磅礴的源码库，深感自己的渺小！</li>
+<li>对引擎更新又激动又害怕，对自己一天只有24小时这个事实深感无力！</li>
+<li>承认自己是个凡人，余生只够掌握一小块知识，和自己妥协，从此虚心向别人请教，对别人的分享心存感激，为自己也能尽一份力分享而欣喜~</li>
+</ul>
+</li>
+<li>工具越简单越好，专注核心内容，别浪费时间调整格式！
+<ul>
+<li>放弃除了VS之外的源码阅读工具，额外的都是负担，间接一层就多了一层信息同步消耗。</li>
+<li>放弃UML图系列工具，只取其思想，放弃其形式，对于上百个类来说，人类无法理解UML的哪怕各角度表达，更何况还得手调其格式排版，一半情况下每新加一个类都得调整一遍。</li>
+<li>对于已经确定的内容，才需要画图来加深理解。别一边理解一边画图，90%时间在调整图排版。</li>
+<li>我个人最后选择了思维导图，有不足，但足够简单可理解。</li>
+<li>最后写文章，我用Markdown码字，Processon画流程图</li>
+</ul>
+</li>
+<li>调试过程：
+<ul>
+<li>开Debug配置编译源码，debug everything！编译选项说明见InsideUE基础概念一章</li>
+<li>一边调试一边记录</li>
+<li>在引擎源码内加debug输出，根据打印数据信息确定数据内容和先后</li>
+<li>抓住主脉络，旁支情况记一下以后再收拾</li>
+</ul>
+</li>
+<li>技巧在于：找！顺藤摸瓜的找！
+<ul>
+<li>WidgetReflector定位代码块（Unreal菜单栏-Tools-Debug里面）</li>
+<li>VA 查找所有引用或调用</li>
+<li>VS 字符串查找</li>
+<li>Everything工具定位文件</li>
+<li>开Debug断点查事件调用</li>
+</ul>
+</li>
+<li>功底体现在于：瞧的懂大概是咋回事</li>
+<li>搬的技巧在：
+<ul>
+<li>能找到办法直接调用的就别拷贝代码</li>
+<li>能否找到调用的代码路径的功底在于：能否事先理解各模块对象的组织关系，事先修行有必要</li>
+<li>别在Runtime下想法子调用Editor的代码，不合法也费劲</li>
+<li>找到目标代码块的：输入和输出，小心内部的依赖</li>
+<li>自己嫁接过来的时候要想法子喂给足够的数据</li>
+<li>如果是流程上插一脚的，想法子找到关键的“旋钮“</li>
+</ul>
+</li>
+</ul>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2022-11-05</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="/posts/%E8%AF%BE%E5%A0%82%E7%AC%94%E8%AE%B0%E5%A4%A7%E9%92%8A-%E8%99%9A%E5%B9%BBcpp%E7%9A%84%E8%BF%9B%E9%98%B6%E4%B9%8B%E8%B7%AF/" data-title="【课堂笔记】大钊-虚幻Cpp的进阶之路" data-hashtags="Unreal,C&#43;&#43;,笔记,学习路径,模块,软引用,资源加载"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="/posts/%E8%AF%BE%E5%A0%82%E7%AC%94%E8%AE%B0%E5%A4%A7%E9%92%8A-%E8%99%9A%E5%B9%BBcpp%E7%9A%84%E8%BF%9B%E9%98%B6%E4%B9%8B%E8%B7%AF/" data-hashtag="Unreal"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="/posts/%E8%AF%BE%E5%A0%82%E7%AC%94%E8%AE%B0%E5%A4%A7%E9%92%8A-%E8%99%9A%E5%B9%BBcpp%E7%9A%84%E8%BF%9B%E9%98%B6%E4%B9%8B%E8%B7%AF/" data-title="【课堂笔记】大钊-虚幻Cpp的进阶之路"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="/posts/%E8%AF%BE%E5%A0%82%E7%AC%94%E8%AE%B0%E5%A4%A7%E9%92%8A-%E8%99%9A%E5%B9%BBcpp%E7%9A%84%E8%BF%9B%E9%98%B6%E4%B9%8B%E8%B7%AF/" data-title="【课堂笔记】大钊-虚幻Cpp的进阶之路"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="/posts/%E8%AF%BE%E5%A0%82%E7%AC%94%E8%AE%B0%E5%A4%A7%E9%92%8A-%E8%99%9A%E5%B9%BBcpp%E7%9A%84%E8%BF%9B%E9%98%B6%E4%B9%8B%E8%B7%AF/" data-title="【课堂笔记】大钊-虚幻Cpp的进阶之路"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/unreal/">Unreal</a>,&nbsp;<a href="/tags/c&#43;&#43;/">C&#43;&#43;</a>,&nbsp;<a href="/tags/%E7%AC%94%E8%AE%B0/">笔记</a>,&nbsp;<a href="/tags/%E5%AD%A6%E4%B9%A0%E8%B7%AF%E5%BE%84/">学习路径</a>,&nbsp;<a href="/tags/%E6%A8%A1%E5%9D%97/">模块</a>,&nbsp;<a href="/tags/%E8%BD%AF%E5%BC%95%E7%94%A8/">软引用</a>,&nbsp;<a href="/tags/%E8%B5%84%E6%BA%90%E5%8A%A0%E8%BD%BD/">资源加载</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/unreal-nuggets%E4%B8%AA%E4%BA%BA%E5%90%91%E8%93%9D%E5%9B%BE%E6%8B%BE%E9%81%97/" class="prev" rel="prev" title="【Unreal Nuggets】个人向蓝图拾遗"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>【Unreal Nuggets】个人向蓝图拾遗</a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.105.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">NightDogC</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/algoliasearch@4.13.1/dist/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":50},"search":{"algoliaAppID":"KJIM11MKHB","algoliaIndex":"Blog","algoliaSearchKey":"3b26d56f84469fd1c614a710d39a0419","highlightTag":"em","maxResultLength":15,"noResultsFound":"No results found","snippetLength":30,"type":"algolia"}};</script><script type="text/javascript" src="/js/theme.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery@2.1.3/dist/jquery.min.js"></script><script type="text/javascript" src="/js/custom.js"></script></body>
+</html>
