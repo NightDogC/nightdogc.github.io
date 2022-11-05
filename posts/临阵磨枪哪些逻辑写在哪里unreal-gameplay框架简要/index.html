@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>【临阵磨枪】哪些逻辑写在哪里——Unreal Gameplay框架简要 - 极东夜狗之巢穴</title><meta name="Description" content="Unreal Engine, Unity3D, Game Design, Game Development"><meta property="og:title" content="【临阵磨枪】哪些逻辑写在哪里——Unreal Gameplay框架简要" />
+<meta property="og:description" content="工作上出了点问题，本质上是对软件工程和设计模式还不够熟悉。姑且先不论之后进一步系统性的学习，首先还是要解决一下目前工作的问题，因此这个笔记属" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/posts/%E4%B8%B4%E9%98%B5%E7%A3%A8%E6%9E%AA%E5%93%AA%E4%BA%9B%E9%80%BB%E8%BE%91%E5%86%99%E5%9C%A8%E5%93%AA%E9%87%8Cunreal-gameplay%E6%A1%86%E6%9E%B6%E7%AE%80%E8%A6%81/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-11-05T14:46:18+08:00" />
+<meta property="article:modified_time" content="2022-11-05T14:46:18+08:00" /><meta property="og:site_name" content="极东夜狗之巢穴" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="【临阵磨枪】哪些逻辑写在哪里——Unreal Gameplay框架简要"/>
+<meta name="twitter:description" content="工作上出了点问题，本质上是对软件工程和设计模式还不够熟悉。姑且先不论之后进一步系统性的学习，首先还是要解决一下目前工作的问题，因此这个笔记属"/>
+<meta name="application-name" content="My cool site">
+<meta name="apple-mobile-web-app-title" content="My cool site"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="/posts/%E4%B8%B4%E9%98%B5%E7%A3%A8%E6%9E%AA%E5%93%AA%E4%BA%9B%E9%80%BB%E8%BE%91%E5%86%99%E5%9C%A8%E5%93%AA%E9%87%8Cunreal-gameplay%E6%A1%86%E6%9E%B6%E7%AE%80%E8%A6%81/" /><link rel="prev" href="/posts/first/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript>
+<link rel="stylesheet" href="/js/katex/katex.min.css" >
+<script src="/js/katex/katex.min.js" > </script>
+<script src="/js/katex/contrib/auto-render.min.js" ></script>
+ 
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        let hasContent = document.getElementsByClassName('toc')[0].getAttribute('class');
+        if (hasContent == null) {
+            return;
+        }
+        renderMathInElement(document.body);
+    });
+</script><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "【临阵磨枪】哪些逻辑写在哪里——Unreal Gameplay框架简要",
+        "inLanguage": "zh-cn",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "\/posts\/%E4%B8%B4%E9%98%B5%E7%A3%A8%E6%9E%AA%E5%93%AA%E4%BA%9B%E9%80%BB%E8%BE%91%E5%86%99%E5%9C%A8%E5%93%AA%E9%87%8Cunreal-gameplay%E6%A1%86%E6%9E%B6%E7%AE%80%E8%A6%81\/"
+        },"genre": "posts","keywords": "临阵磨枪, Gameplay, Unreal, 笔记","wordcount":  3048 ,
+        "url": "\/posts\/%E4%B8%B4%E9%98%B5%E7%A3%A8%E6%9E%AA%E5%93%AA%E4%BA%9B%E9%80%BB%E8%BE%91%E5%86%99%E5%9C%A8%E5%93%AA%E9%87%8Cunreal-gameplay%E6%A1%86%E6%9E%B6%E7%AE%80%E8%A6%81\/","datePublished": "2022-11-05T14:46:18+08:00","dateModified": "2022-11-05T14:46:18+08:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "NightDog"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="极东夜狗之巢穴">极东夜狗之巢穴</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner">
+	                	<div class="dropdown">
+		                  	<a href="/posts/" class="menu-item menu-more dropbtn" title="" ><i class='fas fa-fw fa-archive'></i> 归档 
+		                	</a>
+		                	<div class="menu-more-content dropdown-content"><a href="/categories/" title="" ><i class='fas fa-fw fa-th'></i> 全部分类 </a><a href="/tags/" title="" ><i class='fas fa-fw fa-tag'></i> 所有标签 </a></div>
+		                </div>
+	                <a class="menu-item" href="/categories/unreal/"> Unreal学习笔记 
+		                </a>
+	                	<div class="dropdown">
+		                  	<a href="/categories/game/" class="menu-item menu-more dropbtn" title="" > 其他游戏相关 
+		                	</a>
+		                	<div class="menu-more-content dropdown-content"><a href="/categories/gamedesign/" title="" > 游戏设计相关 </a><a href="/categories/gamedev" title="" > 游戏开发相关 </a><a href="/categories/gamereview/" title="" > 游戏评论 </a><a href="/categories/personalwork" title="" > 个人游戏作品 </a></div>
+		                </div>
+	                <a class="menu-item" href="/categories/dev/"> 其它开发相关 
+		                </a>
+	                	<div class="dropdown">
+		                  	<a href="/categories/other/" class="menu-item menu-more dropbtn" title="" > 其它的其它 
+		                	</a>
+		                	<div class="menu-more-content dropdown-content"><a href="/categories/meme/" title="" > 弔图一堆 </a><a href="/categories/ramble" title="" > 杂谈一堆 </a></div>
+		                </div>
+	                <a class="menu-item" href="/quickpost/"> 查询精神状态 
+		                </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="极东夜狗之巢穴">极东夜狗之巢穴</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div>
+                <div class="dropdown">
+                      <a href="/posts/" class="menu-item menu-more dropbtn" title="" ><i class='fas fa-fw fa-archive'></i> 归档 
+                    </a>
+                    <div class="menu-more-content dropdown-content"><a href="/categories/" title="" ><i class='fas fa-fw fa-th'></i> 全部分类 </a><a href="/tags/" title="" ><i class='fas fa-fw fa-tag'></i> 所有标签 </a></div>
+                </div>
+            <a class="menu-item" href="/categories/unreal/"> Unreal学习笔记 
+                </a>
+                <div class="dropdown">
+                      <a href="/categories/game/" class="menu-item menu-more dropbtn" title="" > 其他游戏相关 
+                    </a>
+                    <div class="menu-more-content dropdown-content"><a href="/categories/gamedesign/" title="" > 游戏设计相关 </a><a href="/categories/gamedev" title="" > 游戏开发相关 </a><a href="/categories/gamereview/" title="" > 游戏评论 </a><a href="/categories/personalwork" title="" > 个人游戏作品 </a></div>
+                </div>
+            <a class="menu-item" href="/categories/dev/"> 其它开发相关 
+                </a>
+                <div class="dropdown">
+                      <a href="/categories/other/" class="menu-item menu-more dropbtn" title="" > 其它的其它 
+                    </a>
+                    <div class="menu-more-content dropdown-content"><a href="/categories/meme/" title="" > 弔图一堆 </a><a href="/categories/ramble" title="" > 杂谈一堆 </a></div>
+                </div>
+            <a class="menu-item" href="/quickpost/"> 查询精神状态 
+                </a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">【临阵磨枪】哪些逻辑写在哪里——Unreal Gameplay框架简要</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>NightDog</a></span>&nbsp;<span class="post-category">included in <a href="/categories/unreal/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Unreal</a></span>&nbsp;with tags:&nbsp;<i class="fas fa-tags fa-fw" aria-hidden="true"></i><a href="/tags/%E4%B8%B4%E9%98%B5%E7%A3%A8%E6%9E%AA/">临阵磨枪</a>,&nbsp;<a href="/tags/gameplay/">Gameplay</a>,&nbsp;<a href="/tags/unreal/">Unreal</a>,&nbsp;<a href="/tags/%E7%AC%94%E8%AE%B0/">笔记</a></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-11-05">2022-11-05</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;3048 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;7 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#actorcomponent">ActorComponent：</a></li>
+    <li><a href="#alevelscriptactor关卡蓝图">ALevelScriptActor（关卡蓝图）：</a></li>
+    <li><a href="#apawnaplayercontroller和aplayerstate">APawn、APlayerController和APlayerState</a></li>
+    <li><a href="#acontroller和aplayerstate">AController和APlayerState</a>
+      <ul>
+        <li><a href="#acontroller">AController</a></li>
+        <li><a href="#aplayerstate">APlayerState</a></li>
+        <li><a href="#aicontroller">AIController</a></li>
+      </ul>
+    </li>
+    <li><a href="#ulevel和uworld">ULevel和UWorld</a>
+      <ul>
+        <li><a href="#ulevel">ULevel</a></li>
+        <li><a href="#uworld">UWorld</a></li>
+      </ul>
+    </li>
+    <li><a href="#gamemode和gamestate">GameMode和GameState</a></li>
+    <li><a href="#gameinstance和savegame">GameInstance和SaveGame</a></li>
+    <li><a href="#usubsystem">USubsystem</a></li>
+    <li><a href="#ui">UI</a></li>
+    <li><a href="#总结什么逻辑在那里">总结：什么逻辑在那里</a>
+      <ul>
+        <li><a href="#输入事件在那里处理">输入事件在那里处理</a></li>
+        <li><a href="#heading"></a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>工作上出了点问题，本质上是对软件工程和设计模式还不够熟悉。姑且先不论之后进一步系统性的学习，首先还是要解决一下目前工作的问题，因此这个笔记属于一个临阵磨枪的性质，不会有深入的剖析，而是强行为个人接下来的实践服务，故谨慎参考。</p>
+<p>在这之前，无论如何首先要把大钊的InsideUE中的Gameplay篇章快速过一遍，后续会再对InsideUE进行精读：<a href="https://zhuanlan.zhihu.com/p/22813908" target="_blank" rel="noopener noreffer ">大钊 - InsideUE4</a></p>
+<p> </p>
+<p>另，本篇参考教程如下：</p>
+<p><a href="https://www.bilibili.com/video/BV1ti4y1r7rS/" target="_blank" rel="noopener noreffer ">[英文直播]和Tom Looman一起开发C++游戏玩法框架(官方字幕)</a></p>
+<p><a href="https://www.bilibili.com/video/BV1ED4y1D7Sf/" target="_blank" rel="noopener noreffer ">[中文直播]第26期 | 虚幻引擎GamePlay框架理解与应用 | Epic 大钊 马骥</a></p>
+<p><a href="https://www.bilibili.com/video/BV1Dq4y1k7uS/" target="_blank" rel="noopener noreffer ">ART0189 - 游戏开发工程</a></p>
+<hr>
+<h2 id="actorcomponent">ActorComponent：</h2>
+<ul>
+<li>组件是种能力</li>
+<li>为Actor提供能力</li>
+<li>能力一般跟业务逻辑无关</li>
+<li>能力是跨游戏的</li>
+</ul>
+<p>一个问题：如果尝试采用组件化开发，在该游戏中有不同的Actor都需要应用同样一份业务逻辑，但是该逻辑不一定能被其他游戏用上，该怎么办呢？</p>
+<p>目前个人的想法是添加接口，即如果一定要用到别的游戏，也不是不可以，去把接口实现了就行。</p>
+<p>例：</p>
+<blockquote>
+<p>通用耐久度设计：</p>
+<ul>
+<li>新建DurabilityInterface，提供函数：
+<ul>
+<li>ConsumeDurability(float AlternativeEnemyATK);</li>
+<li>QueryDurability();</li>
+</ul>
+</li>
+<li>整合耐久度系统至SuperDurabilityComponent，继承自UActorComponent、IDurabilityInterface
+<ul>
+<li>声明变量float Durability、float DurabilityHarmMultiplier</li>
+<li>实现QueryDurability() { return Durability; }</li>
+<li>创建子类WeaponDurabilityComponent、ArmorDurabilityComponent、PropDurabilityComponent</li>
+<li>从PropDurabilityComponent创建子类TimeRelatedPropDurabilityComponent、FrequencyRelatedPropDurabilityComponent</li>
+<li>在PropDurabilityComponent以外的各个子类实现ConsumeDurability(float AlternativeEnemyATK)</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h2 id="alevelscriptactor关卡蓝图">ALevelScriptActor（关卡蓝图）：</h2>
+<ul>
+<li>对于项目来说，大部分情况下在关卡蓝图里并不适合写功能，最多适合一些Demo，快速地做一些功能验证</li>
+<li>适合一些关卡本身的触发机械互动，且多为表现相关内容，比如到某处触发一段Sequence</li>
+<li>一些关卡中机关的触发，虽然看似和关卡本身相关，但机关的触发本身在别的关卡中也需要有，因此触发机关的逻辑还是写在机关Actor本身上为好</li>
+<li>Actor本身也是为了实现跨关卡的能力。</li>
+</ul>
+<p>按我个人目前的理解，某个关卡中某个区域或整个关卡的的重力等这样的一些关卡配置逻辑或许也可以写进关卡蓝图中，但还是尽量谨慎吧。</p>
+<h2 id="apawnaplayercontroller和aplayerstate">APawn、APlayerController和APlayerState</h2>
+<ul>
+<li>Pawn相比Actor，足够复杂</li>
+<li>Pawn、State、Controller一体，集成了MVC</li>
+<li>Pawn里面也要拒绝写入太过于庞大的逻辑和数据，这是不太好的</li>
+</ul>
+<p>一个问题，那是不是意味着Controller里面要写全部的输入逻辑？</p>
+<p>不是的，输入逻辑写在哪里，关键看这个Pawn有没有这个功能，比如攻击、跳跃，这种接受输入的逻辑应当写在Pawn（Character）里，因为这是只有角色才有的功能，而Controller经过Unreal的封装，虽然写在了Pawn里，但由于有Possess这个接口，但实际上还是由Controller告诉Pawn：请攻击、请跳跃的。</p>
+<p>而另一方面，一些“不是这个Pawn该有的功能”的输入操作，则应该写在Controller里，比如暂停、调出UI，应当写在Controller里</p>
+<p>另一个问题，如果不同的Pawn之间有一些通用的功能，比如Character可以Fire，而炮塔也可以Fire，PlayerController既可以Possess炮塔，也可以Possess Character，那么接受Fire的输入的逻辑应该写在哪里呢？</p>
+<p>在我去翻项目工程之前，我自己的想法是在PlayerController里写Fire输入，Fire本身作为一个FireActorComponent，然后派生出炮塔FireActorComponent和CharacterFireActorComponent，分别实现Fireable接口中Fire()函数，PlayerController里Fire输入事件判断当前Pawn是否实现该接口</p>
+<p>工程中则直接采用了接口，取消了一层AcotrComponent的继承关系，直接在炮塔BP和CharacterBP中实现接口。</p>
+<h2 id="acontroller和aplayerstate">AController和APlayerState</h2>
+<h3 id="acontroller">AController</h3>
+<ul>
+<li>用来控制别的Actor的Actor</li>
+</ul>
+<h3 id="aplayerstate">APlayerState</h3>
+<ul>
+<li>肉体的状态（抽离开是为了联机复制）</li>
+</ul>
+<h3 id="aicontroller">AIController</h3>
+<ul>
+<li>AI是否有PlayerState？有，有一个Property是bWantsPlayerState</li>
+</ul>
+<h2 id="ulevel和uworld">ULevel和UWorld</h2>
+<h3 id="ulevel">ULevel</h3>
+<ul>
+<li>Actor的集合</li>
+<li>World里的板块</li>
+<li>对应umap</li>
+</ul>
+<h3 id="uworld">UWorld</h3>
+<ul>
+<li>Level的集合</li>
+<li>运行时，真正的Actor集合</li>
+<li>“关卡”的真正单位</li>
+<li>场景的真正表示对象</li>
+</ul>
+<p>这个层级关系，主要还是涉及到StreamingLevel相关，详见InsideUE即可。</p>
+<p>总之这里比较重要的还是强调一下，不要在关卡里写逻辑。</p>
+<h2 id="gamemode和gamestate">GameMode和GameState</h2>
+<ul>
+<li>
+<p>GameMode实际上是定义的世界（World）的规则，可以理解成WorldMode，它来控制UWorld</p>
+</li>
+<li>
+<p>“上帝的意志”</p>
+</li>
+<li>
+<p>GameState则表示世界的状态</p>
+</li>
+</ul>
+<p>一个问题：如果有关于世界的规则越来越多，那么GameMode中的逻辑也会变得很庞大，该如何处理这种情况？</p>
+<p>见Subsystem</p>
+<h2 id="gameinstance和savegame">GameInstance和SaveGame</h2>
+<ul>
+<li>
+<p>GameInstance是正常游戏的全局示例</p>
+</li>
+<li>
+<p>World的外围管理对象</p>
+</li>
+<li>
+<p>所以会写一些跨关卡的逻辑</p>
+</li>
+<li>
+<p>比如，存档，由于存档实在是太重要了，所以Unreal专门写了一个USaveGame类给开发者使用</p>
+</li>
+<li>
+<p>SaveGame就是GameInstance层级的一个数据对象，当然，根据我的理解，GameInstance里也可以存放一些数据，这些数据是不需要进行序列化保存到本地，只需要在游戏运行期间使用就行的（当然要符合GameInstance这个层级），而需要保存到本地的则放在SaveGame里。</p>
+</li>
+</ul>
+<h2 id="usubsystem">USubsystem</h2>
+<ul>
+<li>业务逻辑的组件</li>
+<li>5个生命周期粒度控制</li>
+<li>自动生成对象</li>
+<li>托管生命周期</li>
+<li><strong>替代Manager类</strong></li>
+</ul>
+<p>详见InsideUE</p>
+<h2 id="ui">UI</h2>
+<ul>
+<li>创建UI，比较推荐写在PlayerController里，不要写在GameMode或者关卡蓝图里</li>
+<li>这个是涉及一个联机问题，因为GameMode是不会在客户端里的，理论上单机游戏创建UI写在哪里都行，但是一旦联机还是写在本地会有的关联性也比较强的PlayerController里为好</li>
+<li>或者，考虑Subsystem</li>
+</ul>
+<h2 id="总结什么逻辑在那里">总结：什么逻辑在那里</h2>
+<ul>
+<li>Component：功能、能力</li>
+<li>Actor：个体本身的逻辑</li>
+<li>Apawn、APlayerController、APlayerState：主角肉体、灵魂、状态</li>
+<li>APawn、AAIController、APlayerState：AI肉体、灵魂、状态</li>
+<li>AAIController、BehaviorTree：AI灵魂、行为树、数据</li>
+<li>AGameMode、AGameState：游戏规则、游戏状态</li>
+<li>UGameInstance、USaveGame：全局游戏实例、游戏存档</li>
+<li>USubsystem：游戏逻辑组件</li>
+</ul>
+<h3 id="输入事件在那里处理">输入事件在那里处理</h3>
+<ul>
+<li>考虑联机扩展</li>
+<li>APlayerController最优先</li>
+<li>APawn其次</li>
+<li>单独Actor且EnableInput</li>
+<li>关卡蓝图：Demo测试</li>
+</ul>
+<h3 id="heading"></h3>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2022-11-05</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="/posts/%E4%B8%B4%E9%98%B5%E7%A3%A8%E6%9E%AA%E5%93%AA%E4%BA%9B%E9%80%BB%E8%BE%91%E5%86%99%E5%9C%A8%E5%93%AA%E9%87%8Cunreal-gameplay%E6%A1%86%E6%9E%B6%E7%AE%80%E8%A6%81/" data-title="【临阵磨枪】哪些逻辑写在哪里——Unreal Gameplay框架简要" data-hashtags="临阵磨枪,Gameplay,Unreal,笔记"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="/posts/%E4%B8%B4%E9%98%B5%E7%A3%A8%E6%9E%AA%E5%93%AA%E4%BA%9B%E9%80%BB%E8%BE%91%E5%86%99%E5%9C%A8%E5%93%AA%E9%87%8Cunreal-gameplay%E6%A1%86%E6%9E%B6%E7%AE%80%E8%A6%81/" data-hashtag="临阵磨枪"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="/posts/%E4%B8%B4%E9%98%B5%E7%A3%A8%E6%9E%AA%E5%93%AA%E4%BA%9B%E9%80%BB%E8%BE%91%E5%86%99%E5%9C%A8%E5%93%AA%E9%87%8Cunreal-gameplay%E6%A1%86%E6%9E%B6%E7%AE%80%E8%A6%81/" data-title="【临阵磨枪】哪些逻辑写在哪里——Unreal Gameplay框架简要"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="/posts/%E4%B8%B4%E9%98%B5%E7%A3%A8%E6%9E%AA%E5%93%AA%E4%BA%9B%E9%80%BB%E8%BE%91%E5%86%99%E5%9C%A8%E5%93%AA%E9%87%8Cunreal-gameplay%E6%A1%86%E6%9E%B6%E7%AE%80%E8%A6%81/" data-title="【临阵磨枪】哪些逻辑写在哪里——Unreal Gameplay框架简要"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="/posts/%E4%B8%B4%E9%98%B5%E7%A3%A8%E6%9E%AA%E5%93%AA%E4%BA%9B%E9%80%BB%E8%BE%91%E5%86%99%E5%9C%A8%E5%93%AA%E9%87%8Cunreal-gameplay%E6%A1%86%E6%9E%B6%E7%AE%80%E8%A6%81/" data-title="【临阵磨枪】哪些逻辑写在哪里——Unreal Gameplay框架简要"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/%E4%B8%B4%E9%98%B5%E7%A3%A8%E6%9E%AA/">临阵磨枪</a>,&nbsp;<a href="/tags/gameplay/">Gameplay</a>,&nbsp;<a href="/tags/unreal/">Unreal</a>,&nbsp;<a href="/tags/%E7%AC%94%E8%AE%B0/">笔记</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/first/" class="prev" rel="prev" title="内容格式参考模板"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>内容格式参考模板</a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.105.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">NightDogC</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/algoliasearch@4.13.1/dist/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":50},"search":{"algoliaAppID":"KJIM11MKHB","algoliaIndex":"Blog","algoliaSearchKey":"3b26d56f84469fd1c614a710d39a0419","highlightTag":"em","maxResultLength":15,"noResultsFound":"No results found","snippetLength":30,"type":"algolia"}};</script><script type="text/javascript" src="/js/theme.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery@2.1.3/dist/jquery.min.js"></script><script type="text/javascript" src="/js/custom.js"></script></body>
+</html>

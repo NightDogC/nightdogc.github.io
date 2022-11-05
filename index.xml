@@ -3,9 +3,17 @@
         <title>极东夜狗之巢穴</title>
         <link>/</link>
         <description>Unreal Engine, Unity3D, Game Design, Game Development</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Sat, 29 Oct 2022 18:01:59 &#43;0800</lastBuildDate>
+        <generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Sat, 05 Nov 2022 14:46:18 &#43;0800</lastBuildDate>
             <atom:link href="/index.xml" rel="self" type="application/rss+xml" />
         <item>
+    <title>【临阵磨枪】哪些逻辑写在哪里——Unreal Gameplay框架简要</title>
+    <link>/posts/%E4%B8%B4%E9%98%B5%E7%A3%A8%E6%9E%AA%E5%93%AA%E4%BA%9B%E9%80%BB%E8%BE%91%E5%86%99%E5%9C%A8%E5%93%AA%E9%87%8Cunreal-gameplay%E6%A1%86%E6%9E%B6%E7%AE%80%E8%A6%81/</link>
+    <pubDate>Sat, 05 Nov 2022 14:46:18 &#43;0800</pubDate>
+    <author>NightDog</author>
+    <guid>/posts/%E4%B8%B4%E9%98%B5%E7%A3%A8%E6%9E%AA%E5%93%AA%E4%BA%9B%E9%80%BB%E8%BE%91%E5%86%99%E5%9C%A8%E5%93%AA%E9%87%8Cunreal-gameplay%E6%A1%86%E6%9E%B6%E7%AE%80%E8%A6%81/</guid>
+    <description><![CDATA[工作上出了点问题，本质上是对软件工程和设计模式还不够熟悉。姑且先不论之后进一步系统性的学习，首先还是要解决一下目前工作的问题，因此这个笔记属]]></description>
+</item>
+<item>
     <title>内容格式参考模板</title>
     <link>/posts/first/</link>
     <pubDate>Sat, 29 Oct 2022 18:01:59 &#43;0800</pubDate>
