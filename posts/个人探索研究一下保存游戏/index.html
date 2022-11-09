@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>【个人探索】研究一下保存游戏的设计 - 极东夜狗之巢穴</title><meta name="Description" content="Unreal Engine, Unity3D, Game Design, Game Development"><meta property="og:title" content="【个人探索】研究一下保存游戏的设计" />
+<meta property="og:description" content="警告 这是一个非计算机背景虚幻入门人员的个人探索，仅记录个人学习时想法和思考过程用，可能会看到各种奇奇怪怪的错误和“这不理所应当知道的知识？”" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/posts/%E4%B8%AA%E4%BA%BA%E6%8E%A2%E7%B4%A2%E7%A0%94%E7%A9%B6%E4%B8%80%E4%B8%8B%E4%BF%9D%E5%AD%98%E6%B8%B8%E6%88%8F/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-11-09T21:26:40+08:00" />
+<meta property="article:modified_time" content="2022-11-09T21:26:40+08:00" /><meta property="og:site_name" content="极东夜狗之巢穴" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="【个人探索】研究一下保存游戏的设计"/>
+<meta name="twitter:description" content="警告 这是一个非计算机背景虚幻入门人员的个人探索，仅记录个人学习时想法和思考过程用，可能会看到各种奇奇怪怪的错误和“这不理所应当知道的知识？”"/>
+<meta name="application-name" content="My cool site">
+<meta name="apple-mobile-web-app-title" content="My cool site"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="/posts/%E4%B8%AA%E4%BA%BA%E6%8E%A2%E7%B4%A2%E7%A0%94%E7%A9%B6%E4%B8%80%E4%B8%8B%E4%BF%9D%E5%AD%98%E6%B8%B8%E6%88%8F/" /><link rel="prev" href="/posts/%E8%AF%BE%E5%A0%82%E7%AC%94%E8%AE%B0%E5%A4%A7%E9%92%8A-%E8%99%9A%E5%B9%BBcpp%E7%9A%84%E8%BF%9B%E9%98%B6%E4%B9%8B%E8%B7%AF/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript>
+<link rel="stylesheet" href="/js/katex/katex.min.css" >
+<script src="/js/katex/katex.min.js" > </script>
+<script src="/js/katex/contrib/auto-render.min.js" ></script>
+ 
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        let hasContent = document.getElementsByClassName('toc')[0].getAttribute('class');
+        if (hasContent == null) {
+            return;
+        }
+        renderMathInElement(document.body);
+    });
+</script><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "【个人探索】研究一下保存游戏的设计",
+        "inLanguage": "zh-cn",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "\/posts\/%E4%B8%AA%E4%BA%BA%E6%8E%A2%E7%B4%A2%E7%A0%94%E7%A9%B6%E4%B8%80%E4%B8%8B%E4%BF%9D%E5%AD%98%E6%B8%B8%E6%88%8F\/"
+        },"genre": "posts","keywords": "Unreal, 个人探索, 保存游戏, 开发设计","wordcount":  4342 ,
+        "url": "\/posts\/%E4%B8%AA%E4%BA%BA%E6%8E%A2%E7%B4%A2%E7%A0%94%E7%A9%B6%E4%B8%80%E4%B8%8B%E4%BF%9D%E5%AD%98%E6%B8%B8%E6%88%8F\/","datePublished": "2022-11-09T21:26:40+08:00","dateModified": "2022-11-09T21:26:40+08:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "NightDog"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="极东夜狗之巢穴">极东夜狗之巢穴</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner">
+	                	<div class="dropdown">
+		                  	<a href="/posts/" class="menu-item menu-more dropbtn" title="" ><i class='fas fa-fw fa-archive'></i> 归档 
+		                	</a>
+		                	<div class="menu-more-content dropdown-content"><a href="/categories/" title="" ><i class='fas fa-fw fa-th'></i> 全部分类 </a><a href="/tags/" title="" ><i class='fas fa-fw fa-tag'></i> 所有标签 </a></div>
+		                </div>
+	                <a class="menu-item" href="/categories/unreal/"> Unreal学习笔记 
+		                </a>
+	                	<div class="dropdown">
+		                  	<a href="/categories/game/" class="menu-item menu-more dropbtn" title="" > 其他游戏相关 
+		                	</a>
+		                	<div class="menu-more-content dropdown-content"><a href="/categories/gamedesign/" title="" > 游戏设计相关 </a><a href="/categories/gamedev" title="" > 游戏开发相关 </a><a href="/categories/gamereview/" title="" > 游戏评论 </a><a href="/categories/personalwork" title="" > 个人游戏作品 </a></div>
+		                </div>
+	                <a class="menu-item" href="/categories/dev/"> 其它开发相关 
+		                </a>
+	                	<div class="dropdown">
+		                  	<a href="/categories/other/" class="menu-item menu-more dropbtn" title="" > 其它的其它 
+		                	</a>
+		                	<div class="menu-more-content dropdown-content"><a href="/categories/meme/" title="" > 弔图一堆 </a><a href="/categories/ramble" title="" > 杂谈一堆 </a></div>
+		                </div>
+	                <a class="menu-item" href="/quickpost/"> 查询精神状态 
+		                </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="极东夜狗之巢穴">极东夜狗之巢穴</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div>
+                <div class="dropdown">
+                      <a href="/posts/" class="menu-item menu-more dropbtn" title="" ><i class='fas fa-fw fa-archive'></i> 归档 
+                    </a>
+                    <div class="menu-more-content dropdown-content"><a href="/categories/" title="" ><i class='fas fa-fw fa-th'></i> 全部分类 </a><a href="/tags/" title="" ><i class='fas fa-fw fa-tag'></i> 所有标签 </a></div>
+                </div>
+            <a class="menu-item" href="/categories/unreal/"> Unreal学习笔记 
+                </a>
+                <div class="dropdown">
+                      <a href="/categories/game/" class="menu-item menu-more dropbtn" title="" > 其他游戏相关 
+                    </a>
+                    <div class="menu-more-content dropdown-content"><a href="/categories/gamedesign/" title="" > 游戏设计相关 </a><a href="/categories/gamedev" title="" > 游戏开发相关 </a><a href="/categories/gamereview/" title="" > 游戏评论 </a><a href="/categories/personalwork" title="" > 个人游戏作品 </a></div>
+                </div>
+            <a class="menu-item" href="/categories/dev/"> 其它开发相关 
+                </a>
+                <div class="dropdown">
+                      <a href="/categories/other/" class="menu-item menu-more dropbtn" title="" > 其它的其它 
+                    </a>
+                    <div class="menu-more-content dropdown-content"><a href="/categories/meme/" title="" > 弔图一堆 </a><a href="/categories/ramble" title="" > 杂谈一堆 </a></div>
+                </div>
+            <a class="menu-item" href="/quickpost/"> 查询精神状态 
+                </a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">【个人探索】研究一下保存游戏的设计</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>NightDog</a></span>&nbsp;<span class="post-category">included in <a href="/categories/unreal/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Unreal</a></span>&nbsp;with tags:&nbsp;<i class="fas fa-tags fa-fw" aria-hidden="true"></i><a href="/tags/unreal/">Unreal</a>,&nbsp;<a href="/tags/%E4%B8%AA%E4%BA%BA%E6%8E%A2%E7%B4%A2/">个人探索</a>,&nbsp;<a href="/tags/%E4%BF%9D%E5%AD%98%E6%B8%B8%E6%88%8F/">保存游戏</a>,&nbsp;<a href="/tags/%E5%BC%80%E5%8F%91%E8%AE%BE%E8%AE%A1/">开发设计</a></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-11-09">2022-11-09</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;4342 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;9 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#综述">综述</a></li>
+    <li><a href="#项目参考---tomlooman---actionroguelike">项目参考 - Tomlooman - ActionRoguelike</a>
+      <ul>
+        <li><a href="#运用接口">运用接口</a></li>
+        <li><a href="#数据类型">数据类型</a></li>
+        <li><a href="#将变量转换为二进制">将变量转换为二进制</a></li>
+        <li><a href="#保存playerdata">保存PlayerData</a></li>
+        <li><a href="#读取playerdata">读取PlayerData</a></li>
+        <li><a href="#将二进制转为变量">将二进制转为变量</a></li>
+        <li><a href="#补充">补充</a></li>
+        <li><a href="#还有一些">还有一些？</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><div class="details admonition warning open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-exclamation-triangle fa-fw" aria-hidden="true"></i>警告<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content">这是一个<strong>非计算机背景</strong>虚幻入门人员的个人探索，仅记录个人学习时想法和思考过程用，可能会看到各种奇奇怪怪的错误和“这不理所应当知道的知识？”，十分不建议参考。</div>
+        </div>
+    </div>
+<div class="details admonition failure open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-times-circle fa-fw" aria-hidden="true"></i>未完成<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content">本篇还没算写完，请尽快更新</div>
+        </div>
+    </div>
+<h2 id="综述">综述</h2>
+<p>保存游戏，可以说是一个游戏中最重要的功能之一。根据虚幻官方文档的说法，保存游戏在游戏开发的早期就应该被设计出来：</p>
+<blockquote>
+<p>Every game needs to come up with a carefully thought out save game management plan early in the game&rsquo;s development.</p>
+</blockquote>
+<p>这点在做自己个人作品的时候就吃了亏，把保存游戏放到了最后实现，存还是能存，不过也就是在一个一本道流程里保存一下当前关卡id而已，好在作品简单，整体影响不大。</p>
+<p>这么一个重要的功能，虚幻已经帮我们实现好了一套使用序列化的保存游戏功能USaveGame，如果在网上搜索虚幻保存游戏，无外乎都是教你如何调用USaveGame的API，但问题来了（也可能是我搜索能力还不够），光是调用API还不够，如何去设计一个游戏的保存功能呢？</p>
+<p>大部分教程显然做得不够好，甚至有为了演示API直接把API调用写在Character类里的，因为他要存Character的HP数据。这里实际上会有两个问题，一是这么做本事其实是没问题的，但考虑到OO，Character在一个游戏里大概率不是上帝，拥有“保存”这种“能力”不太合适，我们需要一个设计来支持较大项目的保存。而第二个问题，面对一些中型以上的游戏，我们希望能保存各种各样的东西：敌人打到一半时它的状态、解谜过程中关卡的进度、玩家做任务的进度、甚至整个世界的进度等等，而不是保存玩家本身的状态就行了。</p>
+<p>关于第二个问题，虚幻其实也有招，一是所有的UObject都继承了Serialize()支持序列化，二是虚幻在反射系统中提供了一个SaveGame标识符，这使得可以在UObject序列化的时候，有选择地将标识了SaveGame的属性进行保存，详细操作教程看Helo老师这篇即可：
+<a href="https://zhuanlan.zhihu.com/p/445800413" target="_blank" rel="noopener noreffer ">UE4/UE5中保存游戏的基础知识 —— Basics about SaveGame in UE4/UE5</a></p>
+<p>那么回到第一个问题，有了这套东西，以我目前的水平来说的一个想法是，可不可以设计一个组件或者接口，组合或接入想要保存的重要Actor，然后通过一个子系统进行管理？</p>
+<p>但是先别急，对目前的我来说，胡乱进行设计不可取。事实上，保存功能不只是游戏，下至notepad，上至操作系统，undo和redo功能可太常见了，因此是有一个专门为此的设计模式的：<a href="https://blog.csdn.net/leonardohaig/article/details/109585166" target="_blank" rel="noopener noreffer ">C++设计模式——备忘录模式(Memento Pattern)</a></p>
+<p>那么，结合大钊老师InsideUE的说法，USaveGame基本就是这个Memento了，剩下的就难以界定了，GameInstance、GameModeBase、各种State类、或者做一个SaveGameSubsystem去做剩下的事好像也都还行，毕竟虚幻直接为我们提供了CreateSaveGameObject、SaveGameToSlot、LoadGameFromSlot等等API，但为了<strong>尽可能地</strong>符合单一职责原则，也为了封装保存的数据，我们肯定还是希望专门有一个东西能够来负责这件事。</p>
+<h2 id="项目参考---tomlooman---actionroguelike">项目参考 - Tomlooman - ActionRoguelike</h2>
+<p>终于到了参考别人项目的时候了，在众多不错的项目中，Tomlooman老师的ActionRoguelike的思路一眼看上去和我刚才的想法类似，可以看看他的具体实现。除此之外，虚幻4的ActionRPG里继承了USaveGame并重载了USaveGame的Serialize()，使得支持不同版本的存档，也是个不错的参考。</p>
+<p>首先是<a href="https://github.com/tomlooman/ActionRoguelike" target="_blank" rel="noopener noreffer ">Tomlooman老师的ActionRoguelike</a>，他还贴心的写了一篇教程：<a href="https://www.tomlooman.com/unreal-engine-cpp-save-system/" target="_blank" rel="noopener noreffer ">Unreal Engine C++ Save System (SaveGame)</a></p>
+<h3 id="运用接口">运用接口</h3>
+<p>在该项目中，对于想要保存的Actor接入了一个 <em>GameplayInterface</em> 接口，并在其中声明了<code>OnActorLoaded()</code></p>
+<div class="details admonition note open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-pencil-alt fa-fw" aria-hidden="true"></i>注意<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content"><p>这个接口是Tomlooman老师复用的一个接口，里面的其余函数声明和保存无关。</p>
+<p>在自己实践时，尽量提供纯粹为了保存使用的接口，并给予接口正确的命名。</p>
+</div>
+        </div>
+    </div>
+<p>在这里使用接口的一个好处是，既可以对需要保存的Actor进行标记，又可以通过 <code>OnActorLoaded()</code> 去实现一些加载后的逻辑。当然，这部分逻辑在BeginPlay()里写也是一样的，只要确保你能在Actor的BeginPlay()调用之前加载好数据。</p>
+<h3 id="数据类型">数据类型</h3>
+<p>然后是用于保存数据的Struct：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="n">USTRUCT</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="nc">FActorSaveData</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="n">GENERATED_BODY</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">public</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">	<span class="cm">/* Identifier for which Actor this belongs to */</span>
+</span></span><span class="line"><span class="cl">	<span class="n">UPROPERTY</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="n">FName</span> <span class="n">ActorName</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="cm">/* For movable Actors, keep location,rotation,scale. */</span>
+</span></span><span class="line"><span class="cl">	<span class="n">UPROPERTY</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="n">FTransform</span> <span class="n">Transform</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="cm">/* Contains all &#39;SaveGame&#39; marked variables of the Actor */</span>
+</span></span><span class="line"><span class="cl">	<span class="n">UPROPERTY</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="n">TArray</span><span class="o">&lt;</span><span class="n">uint8</span><span class="o">&gt;</span> <span class="n">ByteData</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>注释很明白，但有两个可以思考的地方。</p>
+<ol>
+<li>
+<p>对于FTransform属性，确实理论上来说对于绝大部分的Actor来说，都需要记录位置信息，但是需不需要特意把这个属性拎出来呢，考虑以下几点：</p>
+<ol>
+<li>
+<p>对于PlayerState这样重要但没有位置信息的Actor，由于又需要为Player数据确定一个单独的ID，所以打算单独处理PlayerState的保存</p>
+</li>
+<li>
+<p>对于这个游戏内容和游戏本身的设计来说，目前以及未来可能需要保存的东西来说都是有位置信息的</p>
+</li>
+<li>
+<p>虚幻不推荐放置一个Manager类的Actor，进一步降低了没有位置信息的Actor需要保存的可能性</p>
+</li>
+<li>
+<p>不过就算真的没有无SceneComponent的Actor需要保存，那还有另一个问题：假设我有一个东西，就想保存它的一个别的状态，它的位置可以改变，但是我希望它下次加载的时候能出现在默认位置</p>
+</li>
+</ol>
+<p>总之结合实际需求，决定这么做合不合适</p>
+</li>
+<li>
+<p>使用ActorName来标记，没有什么问题，只是后续看到TomLooman老师又点出也可以考虑使用FGuid来标记，对于runtime生成的Actor更有效，以及也可以有更多的解决方案</p>
+</li>
+</ol>
+<h3 id="将变量转换为二进制">将变量转换为二进制</h3>
+<p>其实这部分看这个也差不多：<a href="https://zhuanlan.zhihu.com/p/445800413" target="_blank" rel="noopener noreffer ">UE4/UE5中保存游戏的基础知识 —— Basics about SaveGame in UE4/UE5</a></p>
+<p>但还是做一下笔记：</p>
+<ul>
+<li>使用 <code>FMemoryWriter</code> 和 <code>FObjectAndNameAsStringProxyArchive</code> （都继承自 <code>FArchive</code> ）能够将变量转换为二进制</li>
+<li>然后就是源码了：</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="kt">void</span> <span class="n">USSaveGameSubsystem</span><span class="o">::</span><span class="n">WriteSaveGame</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// Clear arrays, may contain data from previously loaded SaveGame
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">CurrentSaveGame</span><span class="o">-&gt;</span><span class="n">SavedPlayers</span><span class="p">.</span><span class="n">Empty</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">	<span class="n">CurrentSaveGame</span><span class="o">-&gt;</span><span class="n">SavedActors</span><span class="p">.</span><span class="n">Empty</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="n">AGameStateBase</span><span class="o">*</span> <span class="n">GS</span> <span class="o">=</span> <span class="n">GetWorld</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">GetGameState</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="p">(</span><span class="n">GS</span> <span class="o">==</span> <span class="k">nullptr</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="c1">// Warn about failure to save?
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="k">return</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	
+</span></span><span class="line"><span class="cl">	<span class="c1">// Iterate all player states, we don&#39;t have proper ID to match yet (requires Steam or EOS)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="k">for</span> <span class="p">(</span><span class="n">int32</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">GS</span><span class="o">-&gt;</span><span class="n">PlayerArray</span><span class="p">.</span><span class="n">Num</span><span class="p">();</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="n">ASPlayerState</span><span class="o">*</span> <span class="n">PS</span> <span class="o">=</span> <span class="n">Cast</span><span class="o">&lt;</span><span class="n">ASPlayerState</span><span class="o">&gt;</span><span class="p">(</span><span class="n">GS</span><span class="o">-&gt;</span><span class="n">PlayerArray</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="p">(</span><span class="n">PS</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="n">PS</span><span class="o">-&gt;</span><span class="n">SavePlayerState</span><span class="p">(</span><span class="n">CurrentSaveGame</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">			<span class="k">break</span><span class="p">;</span> <span class="c1">// single player only at this point
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// Iterate the entire world of actors
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="k">for</span> <span class="p">(</span><span class="n">FActorIterator</span> <span class="n">It</span><span class="p">(</span><span class="n">GetWorld</span><span class="p">());</span> <span class="n">It</span><span class="p">;</span> <span class="o">++</span><span class="n">It</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="n">AActor</span><span class="o">*</span> <span class="n">Actor</span> <span class="o">=</span> <span class="o">*</span><span class="n">It</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">		<span class="c1">// Only interested in our &#39;gameplay actors&#39;, skip actors that are being destroyed
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="c1">// Note: You might instead use a dedicated SavableObject interface for Actors you want to save instead of re-using GameplayInterface
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">IsValid</span><span class="p">(</span><span class="n">Actor</span><span class="p">)</span> <span class="o">||</span> <span class="o">!</span><span class="n">Actor</span><span class="o">-&gt;</span><span class="n">Implements</span><span class="o">&lt;</span><span class="n">USGameplayInterface</span><span class="o">&gt;</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">		<span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="k">continue</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">		<span class="n">FActorSaveData</span> <span class="n">ActorData</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">		<span class="n">ActorData</span><span class="p">.</span><span class="n">ActorName</span> <span class="o">=</span> <span class="n">Actor</span><span class="o">-&gt;</span><span class="n">GetFName</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">		<span class="n">ActorData</span><span class="p">.</span><span class="n">Transform</span> <span class="o">=</span> <span class="n">Actor</span><span class="o">-&gt;</span><span class="n">GetActorTransform</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">		
+</span></span><span class="line"><span class="cl">		<span class="c1">// Pass the array to fill with data from Actor
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="n">FMemoryWriter</span> <span class="nf">MemWriter</span><span class="p">(</span><span class="n">ActorData</span><span class="p">.</span><span class="n">ByteData</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">		<span class="n">FObjectAndNameAsStringProxyArchive</span> <span class="nf">Ar</span><span class="p">(</span><span class="n">MemWriter</span><span class="p">,</span> <span class="nb">true</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">		<span class="c1">// Find only variables with UPROPERTY(SaveGame)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="n">Ar</span><span class="p">.</span><span class="n">ArIsSaveGame</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">		<span class="c1">// Converts Actor&#39;s SaveGame UPROPERTIES into binary array
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="n">Actor</span><span class="o">-&gt;</span><span class="n">Serialize</span><span class="p">(</span><span class="n">Ar</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">		<span class="c1">// Here CurrentSaveGame is a member variable of type USSaveGame*
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="n">CurrentSaveGame</span><span class="o">-&gt;</span><span class="n">SavedActors</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">ActorData</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="n">UGameplayStatics</span><span class="o">::</span><span class="n">SaveGameToSlot</span><span class="p">(</span><span class="n">CurrentSaveGame</span><span class="p">,</span> <span class="n">CurrentSlotName</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="n">OnSaveGameWritten</span><span class="p">.</span><span class="n">Broadcast</span><span class="p">(</span><span class="n">CurrentSaveGame</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><code>USSaveGame</code> 的头文件源码也放在这先：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="n">UCLASS</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">ACTIONROGUELIKE_API</span> <span class="nl">USSaveGame</span> <span class="p">:</span> <span class="k">public</span> <span class="n">USaveGame</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="n">GENERATED_BODY</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	
+</span></span><span class="line"><span class="cl"><span class="k">public</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="n">UPROPERTY</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="n">TArray</span><span class="o">&lt;</span><span class="n">FPlayerSaveData</span><span class="o">&gt;</span> <span class="n">SavedPlayers</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="cm">/* Actors stored from a level (currently does not support a specific level and just assumes the demo map) */</span>
+</span></span><span class="line"><span class="cl">	<span class="n">UPROPERTY</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="n">TArray</span><span class="o">&lt;</span><span class="n">FActorSaveData</span><span class="o">&gt;</span> <span class="n">SavedActors</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="n">FPlayerSaveData</span><span class="o">*</span> <span class="nf">GetPlayerData</span><span class="p">(</span><span class="n">APlayerState</span><span class="o">*</span> <span class="n">PlayerState</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="保存playerdata">保存PlayerData</h3>
+<p>之前说过，对于APlayerState单独拎出来实现是有一定道理的，那么直接上源码：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="kt">void</span> <span class="n">ASPlayerState</span><span class="o">::</span><span class="n">SavePlayerState_Implementation</span><span class="p">(</span><span class="n">USSaveGame</span><span class="o">*</span> <span class="n">SaveObject</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="p">(</span><span class="n">SaveObject</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="c1">// Gather all relevant data for player
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="n">FPlayerSaveData</span> <span class="n">SaveData</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">		<span class="n">SaveData</span><span class="p">.</span><span class="n">Credits</span> <span class="o">=</span> <span class="n">Credits</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">		<span class="n">SaveData</span><span class="p">.</span><span class="n">PersonalRecordTime</span> <span class="o">=</span> <span class="n">PersonalRecordTime</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">		<span class="c1">// Stored as FString for simplicity (original Steam ID is uint64)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="n">SaveData</span><span class="p">.</span><span class="n">PlayerID</span> <span class="o">=</span> <span class="n">GetUniqueId</span><span class="p">().</span><span class="n">ToString</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">		<span class="c1">// May not be alive while we save
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="k">if</span> <span class="p">(</span><span class="n">APawn</span><span class="o">*</span> <span class="n">MyPawn</span> <span class="o">=</span> <span class="n">GetPawn</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">		<span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="n">SaveData</span><span class="p">.</span><span class="n">Location</span> <span class="o">=</span> <span class="n">MyPawn</span><span class="o">-&gt;</span><span class="n">GetActorLocation</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">			<span class="n">SaveData</span><span class="p">.</span><span class="n">Rotation</span> <span class="o">=</span> <span class="n">MyPawn</span><span class="o">-&gt;</span><span class="n">GetActorRotation</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">			<span class="n">SaveData</span><span class="p">.</span><span class="n">bResumeAtTransform</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		
+</span></span><span class="line"><span class="cl">		<span class="n">SaveObject</span><span class="o">-&gt;</span><span class="n">SavedPlayers</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">SaveData</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>以及相关结构体：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="n">USTRUCT</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="nc">FPlayerSaveData</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="n">GENERATED_BODY</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">public</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="cm">/* Player Id defined by the online sub system (such as Steam) converted to FString for simplicity  */</span> 
+</span></span><span class="line"><span class="cl">	<span class="n">UPROPERTY</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="n">FString</span> <span class="n">PlayerID</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="n">UPROPERTY</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="n">int32</span> <span class="n">Credits</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="cm">/* Longest survival time */</span>
+</span></span><span class="line"><span class="cl">	<span class="n">UPROPERTY</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">float</span> <span class="n">PersonalRecordTime</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="cm">/* Location if player was alive during save */</span>
+</span></span><span class="line"><span class="cl">	<span class="n">UPROPERTY</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="n">FVector</span> <span class="n">Location</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="cm">/* Orientation if player was alive during save */</span> 
+</span></span><span class="line"><span class="cl">	<span class="n">UPROPERTY</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="n">FRotator</span> <span class="n">Rotation</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="cm">/* We don&#39;t always want to restore location, and may just resume player at specific respawn point in world. */</span>
+</span></span><span class="line"><span class="cl">	<span class="n">UPROPERTY</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">	<span class="kt">bool</span> <span class="n">bResumeAtTransform</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="读取playerdata">读取PlayerData</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="kt">void</span> <span class="n">ASPlayerState</span><span class="o">::</span><span class="n">LoadPlayerState_Implementation</span><span class="p">(</span><span class="n">USSaveGame</span><span class="o">*</span> <span class="n">SaveObject</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="p">(</span><span class="n">SaveObject</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="n">FPlayerSaveData</span><span class="o">*</span> <span class="n">FoundData</span> <span class="o">=</span> <span class="n">SaveObject</span><span class="o">-&gt;</span><span class="n">GetPlayerData</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="p">(</span><span class="n">FoundData</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="c1">//Credits = SaveObject-&gt;Credits;
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>			<span class="c1">// Makes sure we trigger credits changed event
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>			<span class="n">AddCredits</span><span class="p">(</span><span class="n">FoundData</span><span class="o">-&gt;</span><span class="n">Credits</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">			<span class="n">PersonalRecordTime</span> <span class="o">=</span> <span class="n">FoundData</span><span class="o">-&gt;</span><span class="n">PersonalRecordTime</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		<span class="k">else</span>
+</span></span><span class="line"><span class="cl">		<span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="n">UE_LOG</span><span class="p">(</span><span class="n">LogTemp</span><span class="p">,</span> <span class="n">Warning</span><span class="p">,</span> <span class="n">TEXT</span><span class="p">(</span><span class="s">&#34;Could not find SaveGame data for player id &#39;%i&#39;.&#34;</span><span class="p">),</span> <span class="n">GetPlayerId</span><span class="p">());</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>以及USSaveGame里的GetPlayerData：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="n">FPlayerSaveData</span><span class="o">*</span> <span class="n">USSaveGame</span><span class="o">::</span><span class="n">GetPlayerData</span><span class="p">(</span><span class="n">APlayerState</span><span class="o">*</span> <span class="n">PlayerState</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="p">(</span><span class="n">PlayerState</span> <span class="o">==</span> <span class="k">nullptr</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="k">nullptr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// Will not give unique ID while PIE so we skip that step while testing in editor.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">// UObjects don&#39;t have access to UWorld, so we grab it via PlayerState instead
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="k">if</span> <span class="p">(</span><span class="n">PlayerState</span><span class="o">-&gt;</span><span class="n">GetWorld</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">IsPlayInEditor</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">	<span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="n">UE_LOG</span><span class="p">(</span><span class="n">LogTemp</span><span class="p">,</span> <span class="n">Log</span><span class="p">,</span> <span class="n">TEXT</span><span class="p">(</span><span class="s">&#34;During PIE we cannot use PlayerID to retrieve Saved Player data. Using first entry in array if available.&#34;</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="p">(</span><span class="n">SavedPlayers</span><span class="p">.</span><span class="n">IsValidIndex</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">		<span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="k">return</span> <span class="o">&amp;</span><span class="n">SavedPlayers</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">		<span class="c1">// No saved player data available
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="k">return</span> <span class="k">nullptr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// Easiest way to deal with the different IDs is as FString (original Steam id is uint64)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">// Keep in mind that GetUniqueId() returns the online id, where GetUniqueID() is a function from UObject (very confusing...)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">FString</span> <span class="n">PlayerID</span> <span class="o">=</span> <span class="n">PlayerState</span><span class="o">-&gt;</span><span class="n">GetUniqueId</span><span class="p">().</span><span class="n">ToString</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// Iterate the array and match by PlayerID (eg. unique ID provided by Steam)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="k">return</span> <span class="n">SavedPlayers</span><span class="p">.</span><span class="n">FindByPredicate</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="k">const</span> <span class="n">FPlayerSaveData</span><span class="o">&amp;</span> <span class="n">Data</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">Data</span><span class="p">.</span><span class="n">PlayerID</span> <span class="o">==</span> <span class="n">PlayerID</span><span class="p">;</span> <span class="p">});</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>那么，LoadPlayerState是怎么调用的呢？</p>
+<p>在这里：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="kt">void</span> <span class="n">USSaveGameSubsystem</span><span class="o">::</span><span class="n">HandleStartingNewPlayer</span><span class="p">(</span><span class="n">AController</span><span class="o">*</span> <span class="n">NewPlayer</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="n">ASPlayerState</span><span class="o">*</span> <span class="n">PS</span> <span class="o">=</span> <span class="n">NewPlayer</span><span class="o">-&gt;</span><span class="n">GetPlayerState</span><span class="o">&lt;</span><span class="n">ASPlayerState</span><span class="o">&gt;</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="p">(</span><span class="n">ensure</span><span class="p">(</span><span class="n">PS</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">	<span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="n">PS</span><span class="o">-&gt;</span><span class="n">LoadPlayerState</span><span class="p">(</span><span class="n">CurrentSaveGame</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>这显然不是终点，我们继续翻：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="kt">void</span> <span class="n">ASGameModeBase</span><span class="o">::</span><span class="n">HandleStartingNewPlayer_Implementation</span><span class="p">(</span><span class="n">APlayerController</span><span class="o">*</span> <span class="n">NewPlayer</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// Calling Before Super:: so we set variables before &#39;beginplayingstate&#39; is called in PlayerController (which is where we instantiate UI)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">USSaveGameSubsystem</span><span class="o">*</span> <span class="n">SG</span> <span class="o">=</span> <span class="n">GetGameInstance</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">GetSubsystem</span><span class="o">&lt;</span><span class="n">USSaveGameSubsystem</span><span class="o">&gt;</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">	<span class="n">SG</span><span class="o">-&gt;</span><span class="n">HandleStartingNewPlayer</span><span class="p">(</span><span class="n">NewPlayer</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="n">Super</span><span class="o">::</span><span class="n">HandleStartingNewPlayer_Implementation</span><span class="p">(</span><span class="n">NewPlayer</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// Now we&#39;re ready to override spawn location
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">// Alternatively we could override core spawn location to use store locations immediately (skipping the whole &#39;find player start&#39; logic)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">SG</span><span class="o">-&gt;</span><span class="n">OverrideSpawnTransform</span><span class="p">(</span><span class="n">NewPlayer</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>到了这里，发现是对GameMode里生成Player的逻辑部分进行了重载。至于为什么分成两部分来实现，TomLooman老师的说法是，尽快加载以处理UI，然后等待Pawn生成，处理位置。</p>
+<h3 id="将二进制转为变量">将二进制转为变量</h3>
+<p>这次使用 <code>FMemoryReader</code> 便可以在调用Serialize()时将二进制读取为变量了</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="kt">void</span> <span class="n">USSaveGameSubsystem</span><span class="o">::</span><span class="n">LoadSaveGame</span><span class="p">(</span><span class="n">FString</span> <span class="n">InSlotName</span> <span class="cm">/*= &#34;&#34;*/</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// Update slot name first if specified, otherwise keeps default name
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">SetSlotName</span><span class="p">(</span><span class="n">InSlotName</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="p">(</span><span class="n">UGameplayStatics</span><span class="o">::</span><span class="n">DoesSaveGameExist</span><span class="p">(</span><span class="n">CurrentSlotName</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">	<span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="n">CurrentSaveGame</span> <span class="o">=</span> <span class="n">Cast</span><span class="o">&lt;</span><span class="n">USSaveGame</span><span class="o">&gt;</span><span class="p">(</span><span class="n">UGameplayStatics</span><span class="o">::</span><span class="n">LoadGameFromSlot</span><span class="p">(</span><span class="n">CurrentSlotName</span><span class="p">,</span> <span class="mi">0</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">		<span class="k">if</span> <span class="p">(</span><span class="n">CurrentSaveGame</span> <span class="o">==</span> <span class="k">nullptr</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="n">UE_LOG</span><span class="p">(</span><span class="n">LogTemp</span><span class="p">,</span> <span class="n">Warning</span><span class="p">,</span> <span class="n">TEXT</span><span class="p">(</span><span class="s">&#34;Failed to load SaveGame Data.&#34;</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">			<span class="k">return</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">		<span class="n">UE_LOG</span><span class="p">(</span><span class="n">LogTemp</span><span class="p">,</span> <span class="n">Log</span><span class="p">,</span> <span class="n">TEXT</span><span class="p">(</span><span class="s">&#34;Loaded SaveGame Data.&#34;</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">		<span class="c1">// Iterate the entire world of actors
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="k">for</span> <span class="p">(</span><span class="n">FActorIterator</span> <span class="n">It</span><span class="p">(</span><span class="n">GetWorld</span><span class="p">());</span> <span class="n">It</span><span class="p">;</span> <span class="o">++</span><span class="n">It</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="n">AActor</span><span class="o">*</span> <span class="n">Actor</span> <span class="o">=</span> <span class="o">*</span><span class="n">It</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">			<span class="c1">// Only interested in our &#39;gameplay actors&#39;
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>			<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">Actor</span><span class="o">-&gt;</span><span class="n">Implements</span><span class="o">&lt;</span><span class="n">USGameplayInterface</span><span class="o">&gt;</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">			<span class="p">{</span>
+</span></span><span class="line"><span class="cl">				<span class="k">continue</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">			<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">			<span class="k">for</span> <span class="p">(</span><span class="n">FActorSaveData</span> <span class="nl">ActorData</span> <span class="p">:</span> <span class="n">CurrentSaveGame</span><span class="o">-&gt;</span><span class="n">SavedActors</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">			<span class="p">{</span>
+</span></span><span class="line"><span class="cl">				<span class="k">if</span> <span class="p">(</span><span class="n">ActorData</span><span class="p">.</span><span class="n">ActorName</span> <span class="o">==</span> <span class="n">Actor</span><span class="o">-&gt;</span><span class="n">GetFName</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">				<span class="p">{</span>
+</span></span><span class="line"><span class="cl">					<span class="n">Actor</span><span class="o">-&gt;</span><span class="n">SetActorTransform</span><span class="p">(</span><span class="n">ActorData</span><span class="p">.</span><span class="n">Transform</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">					<span class="n">FMemoryReader</span> <span class="nf">MemReader</span><span class="p">(</span><span class="n">ActorData</span><span class="p">.</span><span class="n">ByteData</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">					<span class="n">FObjectAndNameAsStringProxyArchive</span> <span class="nf">Ar</span><span class="p">(</span><span class="n">MemReader</span><span class="p">,</span> <span class="nb">true</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">					<span class="n">Ar</span><span class="p">.</span><span class="n">ArIsSaveGame</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">					<span class="c1">// Convert binary array back into actor&#39;s variables
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>					<span class="n">Actor</span><span class="o">-&gt;</span><span class="n">Serialize</span><span class="p">(</span><span class="n">Ar</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">					<span class="n">ISGameplayInterface</span><span class="o">::</span><span class="n">Execute_OnActorLoaded</span><span class="p">(</span><span class="n">Actor</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">					<span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">				<span class="p">}</span>
+</span></span><span class="line"><span class="cl">			<span class="p">}</span>
+</span></span><span class="line"><span class="cl">		<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">		<span class="n">OnSaveGameLoaded</span><span class="p">.</span><span class="n">Broadcast</span><span class="p">(</span><span class="n">CurrentSaveGame</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="k">else</span>
+</span></span><span class="line"><span class="cl">	<span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="n">CurrentSaveGame</span> <span class="o">=</span> <span class="n">Cast</span><span class="o">&lt;</span><span class="n">USSaveGame</span><span class="o">&gt;</span><span class="p">(</span><span class="n">UGameplayStatics</span><span class="o">::</span><span class="n">CreateSaveGameObject</span><span class="p">(</span><span class="n">USSaveGame</span><span class="o">::</span><span class="n">StaticClass</span><span class="p">()));</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">		<span class="n">UE_LOG</span><span class="p">(</span><span class="n">LogTemp</span><span class="p">,</span> <span class="n">Log</span><span class="p">,</span> <span class="n">TEXT</span><span class="p">(</span><span class="s">&#34;Created New SaveGame Data.&#34;</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>顺便也看看调用：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="kt">void</span> <span class="n">ASGameModeBase</span><span class="o">::</span><span class="n">InitGame</span><span class="p">(</span><span class="k">const</span> <span class="n">FString</span><span class="o">&amp;</span> <span class="n">MapName</span><span class="p">,</span> <span class="k">const</span> <span class="n">FString</span><span class="o">&amp;</span> <span class="n">Options</span><span class="p">,</span> <span class="n">FString</span><span class="o">&amp;</span> <span class="n">ErrorMessage</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="n">Super</span><span class="o">::</span><span class="n">InitGame</span><span class="p">(</span><span class="n">MapName</span><span class="p">,</span> <span class="n">Options</span><span class="p">,</span> <span class="n">ErrorMessage</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// (Save/Load logic moved into new SaveGameSubsystem)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">USSaveGameSubsystem</span><span class="o">*</span> <span class="n">SG</span> <span class="o">=</span> <span class="n">GetGameInstance</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">GetSubsystem</span><span class="o">&lt;</span><span class="n">USSaveGameSubsystem</span><span class="o">&gt;</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// Optional slot name (Falls back to slot specified in SaveGameSettings class/INI otherwise)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="n">FString</span> <span class="n">SelectedSaveSlot</span> <span class="o">=</span> <span class="n">UGameplayStatics</span><span class="o">::</span><span class="n">ParseOption</span><span class="p">(</span><span class="n">Options</span><span class="p">,</span> <span class="s">&#34;SaveGame&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">	<span class="n">SG</span><span class="o">-&gt;</span><span class="n">LoadSaveGame</span><span class="p">(</span><span class="n">SelectedSaveSlot</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>加载关卡时有个注意事项，现在太晚了，有空补上。</p>
+<h3 id="补充">补充</h3>
+<p>那么，这套系统还需要补充什么地方？</p>
+<p>显而易见地，对于Destroyed的Actor，通过这样的方法是保存不到的。目前我自己有考虑一些方案，可能不是很成熟就不提出来了。</p>
+<p>另外，如果实现联机，有关获取PlayerState的问题的参考如下：</p>
+<blockquote>
+<p>客户端获取Actor PlayerController的途径有Server SetOwner-&gt;Client GetOwner，但不唯一。通过在Server记录PlayerController准确的Index然后传给Client，让Client使用GetPlayerController（Index）能获取到正确的PlayerController；使用PlayerState，GetPlayerStatus-&gt;GetPlayerID-&gt;GetPlayerControllerFromID亦可得到正确的PlayerController。</p>
+</blockquote>
+<p>From：<a href="https://www.bilibili.com/read/cv12535946" target="_blank" rel="noopener noreffer ">UE4笔记8：多人情况下获取玩家控制器的问题</a></p>
+<p>最后，对于额外的关卡流保存和加载，可以参考 <a href="https://github.com/sinbad/SPUD" target="_blank" rel="noopener noreffer ">Steve&rsquo;s Library</a>（很强）</p>
+<h3 id="还有一些">还有一些？</h3>
+<p>太晚了现在，本来是讲系统设计的结果教程看着看着就关注实现了，教程的最后总结也没细看，这两点后续要补充。代码也只是复制粘贴没详细说说，这么直接复制粘贴人家代码也不太好。。。以后会换成自己的理解，代码还请上人家自己网站上看。最后ActionRPG的保存版本功能也没来得及说。</p>
+<p>目前还是属于对人家的一个搬运，没什么自己的东西，但为了方便自己看，还是先发布了，哎。</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2022-11-09</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="/posts/%E4%B8%AA%E4%BA%BA%E6%8E%A2%E7%B4%A2%E7%A0%94%E7%A9%B6%E4%B8%80%E4%B8%8B%E4%BF%9D%E5%AD%98%E6%B8%B8%E6%88%8F/" data-title="【个人探索】研究一下保存游戏的设计" data-hashtags="Unreal,个人探索,保存游戏,开发设计"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="/posts/%E4%B8%AA%E4%BA%BA%E6%8E%A2%E7%B4%A2%E7%A0%94%E7%A9%B6%E4%B8%80%E4%B8%8B%E4%BF%9D%E5%AD%98%E6%B8%B8%E6%88%8F/" data-hashtag="Unreal"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="/posts/%E4%B8%AA%E4%BA%BA%E6%8E%A2%E7%B4%A2%E7%A0%94%E7%A9%B6%E4%B8%80%E4%B8%8B%E4%BF%9D%E5%AD%98%E6%B8%B8%E6%88%8F/" data-title="【个人探索】研究一下保存游戏的设计"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="/posts/%E4%B8%AA%E4%BA%BA%E6%8E%A2%E7%B4%A2%E7%A0%94%E7%A9%B6%E4%B8%80%E4%B8%8B%E4%BF%9D%E5%AD%98%E6%B8%B8%E6%88%8F/" data-title="【个人探索】研究一下保存游戏的设计"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="/posts/%E4%B8%AA%E4%BA%BA%E6%8E%A2%E7%B4%A2%E7%A0%94%E7%A9%B6%E4%B8%80%E4%B8%8B%E4%BF%9D%E5%AD%98%E6%B8%B8%E6%88%8F/" data-title="【个人探索】研究一下保存游戏的设计"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/unreal/">Unreal</a>,&nbsp;<a href="/tags/%E4%B8%AA%E4%BA%BA%E6%8E%A2%E7%B4%A2/">个人探索</a>,&nbsp;<a href="/tags/%E4%BF%9D%E5%AD%98%E6%B8%B8%E6%88%8F/">保存游戏</a>,&nbsp;<a href="/tags/%E5%BC%80%E5%8F%91%E8%AE%BE%E8%AE%A1/">开发设计</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/%E8%AF%BE%E5%A0%82%E7%AC%94%E8%AE%B0%E5%A4%A7%E9%92%8A-%E8%99%9A%E5%B9%BBcpp%E7%9A%84%E8%BF%9B%E9%98%B6%E4%B9%8B%E8%B7%AF/" class="prev" rel="prev" title="【课堂笔记】大钊-虚幻Cpp的进阶之路"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>【课堂笔记】大钊-虚幻Cpp的进阶之路</a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.105.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">NightDogC</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/algoliasearch@4.13.1/dist/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":50},"search":{"algoliaAppID":"KJIM11MKHB","algoliaIndex":"Blog","algoliaSearchKey":"3b26d56f84469fd1c614a710d39a0419","highlightTag":"em","maxResultLength":15,"noResultsFound":"No results found","snippetLength":30,"type":"algolia"}};</script><script type="text/javascript" src="/js/theme.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery@2.1.3/dist/jquery.min.js"></script><script type="text/javascript" src="/js/custom.js"></script></body>
+</html>
