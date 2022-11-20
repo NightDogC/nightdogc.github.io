@@ -14,6 +14,14 @@
     <description><![CDATA[我怎么这么菜？？？ 这是一个我几乎每天都会问自己的问题。 自我每天都这么问自己的数年后的今天，我终于醒悟了过来，从这个问题出发思考到了另外一个问]]></description>
 </item>
 <item>
+    <title>【个人探索】尝试对虚幻加载流程做点笔记</title>
+    <link>/posts/%E4%B8%AA%E4%BA%BA%E6%8E%A2%E7%B4%A2gameplay%E6%A1%86%E6%9E%B6%E5%8A%A0%E8%BD%BD%E6%8E%A2%E7%B4%A2/</link>
+    <pubDate>Wed, 09 Nov 2022 21:26:40 &#43;0800</pubDate>
+    <author>NightDog</author>
+    <guid>/posts/%E4%B8%AA%E4%BA%BA%E6%8E%A2%E7%B4%A2gameplay%E6%A1%86%E6%9E%B6%E5%8A%A0%E8%BD%BD%E6%8E%A2%E7%B4%A2/</guid>
+    <description><![CDATA[警告 这是一个非计算机背景虚幻入门人员的个人探索，仅记录个人学习时想法和思考过程用，可能会看到各种奇奇怪怪的错误和“这不理所应当知道的知识？”]]></description>
+</item>
+<item>
     <title>【个人探索】研究一下保存游戏的设计与实现细节（基础篇）</title>
     <link>/posts/%E4%B8%AA%E4%BA%BA%E6%8E%A2%E7%B4%A2%E7%A0%94%E7%A9%B6%E4%B8%80%E4%B8%8B%E4%BF%9D%E5%AD%98%E6%B8%B8%E6%88%8F/</link>
     <pubDate>Wed, 09 Nov 2022 21:26:40 &#43;0800</pubDate>
@@ -28,6 +36,14 @@
     <author>NightDog</author>
     <guid>/posts/%E8%AF%BE%E5%A0%82%E7%AC%94%E8%AE%B0%E5%A4%A7%E9%92%8A-%E8%99%9A%E5%B9%BBcpp%E7%9A%84%E8%BF%9B%E9%98%B6%E4%B9%8B%E8%B7%AF/</guid>
     <description><![CDATA[本次笔记的课程为 大钊-虚幻C++的进阶之路 里面简单介绍了一下UnrealC++的学习路径、Module-UBT-C#相关、反射-UHT相关、]]></description>
+</item>
+<item>
+    <title>【Unreal Nuggets】C&#43;&#43;访问Gameplay框架的Actor们的方法</title>
+    <link>/posts/unreal-nuggetsunreal-cpp%E4%B8%AD%E8%AE%BF%E9%97%AEgameplay%E6%A1%86%E6%9E%B6%E7%9A%84actor%E4%BB%AC%E7%9A%84%E6%96%B9%E6%B3%95/</link>
+    <pubDate>Sat, 05 Nov 2022 14:46:18 &#43;0800</pubDate>
+    <author>NightDog</author>
+    <guid>/posts/unreal-nuggetsunreal-cpp%E4%B8%AD%E8%AE%BF%E9%97%AEgameplay%E6%A1%86%E6%9E%B6%E7%9A%84actor%E4%BB%AC%E7%9A%84%E6%96%B9%E6%B3%95/</guid>
+    <description><![CDATA[【Unreal Nuggets】系列为记下来平时使用Unreal开发过程中的一些小Tips、小（骚）操作、一些临时去查的API、小特性、小功能]]></description>
 </item>
 <item>
     <title>【Unreal Nuggets】个人向蓝图拾遗</title>

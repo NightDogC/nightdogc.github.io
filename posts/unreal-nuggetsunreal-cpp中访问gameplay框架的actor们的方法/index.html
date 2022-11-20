@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>【Unreal Nuggets】C&#43;&#43;访问Gameplay框架的Actor们的方法 - 极东夜狗之巢穴</title><meta name="Description" content="Unreal Engine, Unity3D, Game Design, Game Development"><meta property="og:title" content="【Unreal Nuggets】C&#43;&#43;访问Gameplay框架的Actor们的方法" />
+<meta property="og:description" content="【Unreal Nuggets】系列为记下来平时使用Unreal开发过程中的一些小Tips、小（骚）操作、一些临时去查的API、小特性、小功能" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/posts/unreal-nuggetsunreal-cpp%E4%B8%AD%E8%AE%BF%E9%97%AEgameplay%E6%A1%86%E6%9E%B6%E7%9A%84actor%E4%BB%AC%E7%9A%84%E6%96%B9%E6%B3%95/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-11-05T14:46:18+08:00" />
+<meta property="article:modified_time" content="2022-11-05T14:46:18+08:00" /><meta property="og:site_name" content="极东夜狗之巢穴" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="【Unreal Nuggets】C&#43;&#43;访问Gameplay框架的Actor们的方法"/>
+<meta name="twitter:description" content="【Unreal Nuggets】系列为记下来平时使用Unreal开发过程中的一些小Tips、小（骚）操作、一些临时去查的API、小特性、小功能"/>
+<meta name="application-name" content="My cool site">
+<meta name="apple-mobile-web-app-title" content="My cool site"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="/posts/unreal-nuggetsunreal-cpp%E4%B8%AD%E8%AE%BF%E9%97%AEgameplay%E6%A1%86%E6%9E%B6%E7%9A%84actor%E4%BB%AC%E7%9A%84%E6%96%B9%E6%B3%95/" /><link rel="prev" href="/posts/unreal-nuggets%E4%B8%AA%E4%BA%BA%E5%90%91%E8%93%9D%E5%9B%BE%E6%8B%BE%E9%81%97/" /><link rel="next" href="/posts/%E8%AF%BE%E5%A0%82%E7%AC%94%E8%AE%B0%E5%A4%A7%E9%92%8A-%E8%99%9A%E5%B9%BBcpp%E7%9A%84%E8%BF%9B%E9%98%B6%E4%B9%8B%E8%B7%AF/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript>
+<link rel="stylesheet" href="/js/katex/katex.min.css" >
+<script src="/js/katex/katex.min.js" > </script>
+<script src="/js/katex/contrib/auto-render.min.js" ></script>
+ 
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        let hasContent = document.getElementsByClassName('toc')[0].getAttribute('class');
+        if (hasContent == null) {
+            return;
+        }
+        renderMathInElement(document.body);
+    });
+</script><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "【Unreal Nuggets】C++访问Gameplay框架的Actor们的方法",
+        "inLanguage": "zh-cn",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "\/posts\/unreal-nuggetsunreal-cpp%E4%B8%AD%E8%AE%BF%E9%97%AEgameplay%E6%A1%86%E6%9E%B6%E7%9A%84actor%E4%BB%AC%E7%9A%84%E6%96%B9%E6%B3%95\/"
+        },"genre": "posts","keywords": "临阵磨枪, Gameplay, Unreal, 笔记","wordcount":  727 ,
+        "url": "\/posts\/unreal-nuggetsunreal-cpp%E4%B8%AD%E8%AE%BF%E9%97%AEgameplay%E6%A1%86%E6%9E%B6%E7%9A%84actor%E4%BB%AC%E7%9A%84%E6%96%B9%E6%B3%95\/","datePublished": "2022-11-05T14:46:18+08:00","dateModified": "2022-11-05T14:46:18+08:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "NightDog"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="极东夜狗之巢穴">极东夜狗之巢穴</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner">
+	                	<div class="dropdown">
+		                  	<a href="/posts/" class="menu-item menu-more dropbtn" title="" ><i class='fas fa-fw fa-archive'></i> 归档 
+		                	</a>
+		                	<div class="menu-more-content dropdown-content"><a href="/categories/" title="" ><i class='fas fa-fw fa-th'></i> 全部分类 </a><a href="/tags/" title="" ><i class='fas fa-fw fa-tag'></i> 所有标签 </a></div>
+		                </div>
+	                <a class="menu-item" href="/categories/unreal/"> Unreal学习笔记 
+		                </a>
+	                	<div class="dropdown">
+		                  	<a href="/categories/game/" class="menu-item menu-more dropbtn" title="" > 其他游戏相关 
+		                	</a>
+		                	<div class="menu-more-content dropdown-content"><a href="/categories/gamedesign/" title="" > 游戏设计相关 </a><a href="/categories/gamedev" title="" > 游戏开发相关 </a><a href="/categories/gamereview/" title="" > 游戏评论 </a><a href="/categories/personalwork" title="" > 个人游戏作品 </a></div>
+		                </div>
+	                <a class="menu-item" href="/categories/dev/"> 其它开发相关 
+		                </a>
+	                	<div class="dropdown">
+		                  	<a href="/categories/other/" class="menu-item menu-more dropbtn" title="" > 其它的其它 
+		                	</a>
+		                	<div class="menu-more-content dropdown-content"><a href="/categories/meme/" title="" > 弔图一堆 </a><a href="/categories/ramble" title="" > 杂谈一堆 </a></div>
+		                </div>
+	                <a class="menu-item" href="/quickpost/"> 查询精神状态 
+		                </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="极东夜狗之巢穴">极东夜狗之巢穴</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div>
+                <div class="dropdown">
+                      <a href="/posts/" class="menu-item menu-more dropbtn" title="" ><i class='fas fa-fw fa-archive'></i> 归档 
+                    </a>
+                    <div class="menu-more-content dropdown-content"><a href="/categories/" title="" ><i class='fas fa-fw fa-th'></i> 全部分类 </a><a href="/tags/" title="" ><i class='fas fa-fw fa-tag'></i> 所有标签 </a></div>
+                </div>
+            <a class="menu-item" href="/categories/unreal/"> Unreal学习笔记 
+                </a>
+                <div class="dropdown">
+                      <a href="/categories/game/" class="menu-item menu-more dropbtn" title="" > 其他游戏相关 
+                    </a>
+                    <div class="menu-more-content dropdown-content"><a href="/categories/gamedesign/" title="" > 游戏设计相关 </a><a href="/categories/gamedev" title="" > 游戏开发相关 </a><a href="/categories/gamereview/" title="" > 游戏评论 </a><a href="/categories/personalwork" title="" > 个人游戏作品 </a></div>
+                </div>
+            <a class="menu-item" href="/categories/dev/"> 其它开发相关 
+                </a>
+                <div class="dropdown">
+                      <a href="/categories/other/" class="menu-item menu-more dropbtn" title="" > 其它的其它 
+                    </a>
+                    <div class="menu-more-content dropdown-content"><a href="/categories/meme/" title="" > 弔图一堆 </a><a href="/categories/ramble" title="" > 杂谈一堆 </a></div>
+                </div>
+            <a class="menu-item" href="/quickpost/"> 查询精神状态 
+                </a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">【Unreal Nuggets】C++访问Gameplay框架的Actor们的方法</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>NightDog</a></span>&nbsp;<span class="post-category">included in <a href="/categories/unreal/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Unreal</a></span>&nbsp;with tags:&nbsp;<i class="fas fa-tags fa-fw" aria-hidden="true"></i><a href="/tags/%E4%B8%B4%E9%98%B5%E7%A3%A8%E6%9E%AA/">临阵磨枪</a>,&nbsp;<a href="/tags/gameplay/">Gameplay</a>,&nbsp;<a href="/tags/unreal/">Unreal</a>,&nbsp;<a href="/tags/%E7%AC%94%E8%AE%B0/">笔记</a></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-11-05">2022-11-05</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;727 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;2 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#accessing-playercontroller">Accessing PlayerController</a></li>
+    <li><a href="#accessing-pawn">Accessing Pawn</a></li>
+    <li><a href="#accessing-gamemode">Accessing GameMode</a></li>
+    <li><a href="#accessing-world">Accessing World</a></li>
+    <li><a href="#accessing-gameinstance">Accessing GameInstance</a></li>
+    <li><a href="#accessing-playerstate">Accessing PlayerState</a></li>
+    <li><a href="#accessing-gamestate">Accessing GameState</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>【Unreal Nuggets】系列为记下来平时使用Unreal开发过程中的一些小Tips、小（骚）操作、一些临时去查的API、小特性、小功能、以及一些Unreal游戏开发的约定俗成的套路。</p>
+<hr>
+<p>想要访问GI、GM、GS、PC、PS这些东西，基本上通过GameplayStatics的各种静态方法都能拿到个七七八八，这里总结一下除了GameplayStatics以外的各种在C++中访问这些东西的API</p>
+<p>参考：<a href="https://www.tomlooman.com/unreal-engine-gameplay-framework/" target="_blank" rel="noopener noreffer ">Tom Looman - Unreal Gameplay Framework Guide for C++</a></p>
+<h2 id="accessing-playercontroller">Accessing PlayerController</h2>
+<ul>
+<li><code>GetWorld()-&gt;GetPlayerControllerIterator()</code> // GetWorld在所有Actor都能用，拿到所有的PlayerController</li>
+<li><code>PlayerState-&gt;GetOwner()</code> //PlayerState里拿到Owner的PlayerController</li>
+<li><code>Pawn-&gt;GetController()</code> // Pawn里拿到Possessed的PlayerController</li>
+<li>另外，对于AIController，C++的话从Pawn里和PlayerController一样拿，但是蓝图的API是GetAIController</li>
+</ul>
+<h2 id="accessing-pawn">Accessing Pawn</h2>
+<ul>
+<li><code>PlayerController-&gt;GetPawn()</code> // 拿到Controller Possess的Pawn</li>
+<li><code>GetWorld()-&gt;GetPawnIterator()</code> //拿到所有的Pawn</li>
+</ul>
+<h2 id="accessing-gamemode">Accessing GameMode</h2>
+<ul>
+<li><code>GetWorld()-&gt;GetAuthGameMode()</code></li>
+<li>如果没什么必要，不要随便乱访问GameMode，本来这玩意只在Server上的……你想用它干啥？要干涉世界的意志吗？</li>
+</ul>
+<h2 id="accessing-world">Accessing World</h2>
+<ul>
+<li>所有的Actor都有 <code>GetWorld()</code></li>
+<li>遇到需要WorldContext的参数，传一个能 <code>GetWorld()</code> 的对象就好了，一般就是this</li>
+</ul>
+<h2 id="accessing-gameinstance">Accessing GameInstance</h2>
+<ul>
+<li>所有的Actor都有 <code>GetGameInstance()</code></li>
+<li><code>GetWorld()-&gt;GetGameInstance&lt;T&gt;()</code> // 这个模版等于说是自带类型转换</li>
+</ul>
+<h2 id="accessing-playerstate">Accessing PlayerState</h2>
+<ul>
+<li>Pawn自带PlayerState成员变量</li>
+<li>Controller自带PlayerState成员变量</li>
+<li>GameState自带PlayerArray成员变量，能拿到当前所有PlayerState的list</li>
+</ul>
+<h2 id="accessing-gamestate">Accessing GameState</h2>
+<ul>
+<li><code>World-&gt;GetGameState&lt;T&gt;()</code> // 这个也自带类型转换</li>
+<li><code>GameMode-&gt;GetGameState()</code> // 客户端访问GS别用这个，毕竟不要在客户端乱访问GM</li>
+</ul>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2022-11-05</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="/posts/unreal-nuggetsunreal-cpp%E4%B8%AD%E8%AE%BF%E9%97%AEgameplay%E6%A1%86%E6%9E%B6%E7%9A%84actor%E4%BB%AC%E7%9A%84%E6%96%B9%E6%B3%95/" data-title="【Unreal Nuggets】C&#43;&#43;访问Gameplay框架的Actor们的方法" data-hashtags="临阵磨枪,Gameplay,Unreal,笔记"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="/posts/unreal-nuggetsunreal-cpp%E4%B8%AD%E8%AE%BF%E9%97%AEgameplay%E6%A1%86%E6%9E%B6%E7%9A%84actor%E4%BB%AC%E7%9A%84%E6%96%B9%E6%B3%95/" data-hashtag="临阵磨枪"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="/posts/unreal-nuggetsunreal-cpp%E4%B8%AD%E8%AE%BF%E9%97%AEgameplay%E6%A1%86%E6%9E%B6%E7%9A%84actor%E4%BB%AC%E7%9A%84%E6%96%B9%E6%B3%95/" data-title="【Unreal Nuggets】C&#43;&#43;访问Gameplay框架的Actor们的方法"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="/posts/unreal-nuggetsunreal-cpp%E4%B8%AD%E8%AE%BF%E9%97%AEgameplay%E6%A1%86%E6%9E%B6%E7%9A%84actor%E4%BB%AC%E7%9A%84%E6%96%B9%E6%B3%95/" data-title="【Unreal Nuggets】C&#43;&#43;访问Gameplay框架的Actor们的方法"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="/posts/unreal-nuggetsunreal-cpp%E4%B8%AD%E8%AE%BF%E9%97%AEgameplay%E6%A1%86%E6%9E%B6%E7%9A%84actor%E4%BB%AC%E7%9A%84%E6%96%B9%E6%B3%95/" data-title="【Unreal Nuggets】C&#43;&#43;访问Gameplay框架的Actor们的方法"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/%E4%B8%B4%E9%98%B5%E7%A3%A8%E6%9E%AA/">临阵磨枪</a>,&nbsp;<a href="/tags/gameplay/">Gameplay</a>,&nbsp;<a href="/tags/unreal/">Unreal</a>,&nbsp;<a href="/tags/%E7%AC%94%E8%AE%B0/">笔记</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/unreal-nuggets%E4%B8%AA%E4%BA%BA%E5%90%91%E8%93%9D%E5%9B%BE%E6%8B%BE%E9%81%97/" class="prev" rel="prev" title="【Unreal Nuggets】个人向蓝图拾遗"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>【Unreal Nuggets】个人向蓝图拾遗</a>
+            <a href="/posts/%E8%AF%BE%E5%A0%82%E7%AC%94%E8%AE%B0%E5%A4%A7%E9%92%8A-%E8%99%9A%E5%B9%BBcpp%E7%9A%84%E8%BF%9B%E9%98%B6%E4%B9%8B%E8%B7%AF/" class="next" rel="next" title="【课堂笔记】大钊-虚幻Cpp的进阶之路">【课堂笔记】大钊-虚幻Cpp的进阶之路<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.105.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">NightDogC</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/algoliasearch@4.13.1/dist/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":50},"search":{"algoliaAppID":"KJIM11MKHB","algoliaIndex":"Blog","algoliaSearchKey":"3b26d56f84469fd1c614a710d39a0419","highlightTag":"em","maxResultLength":15,"noResultsFound":"No results found","snippetLength":30,"type":"algolia"}};</script><script type="text/javascript" src="/js/theme.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery@2.1.3/dist/jquery.min.js"></script><script type="text/javascript" src="/js/custom.js"></script></body>
+</html>

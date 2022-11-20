@@ -1,0 +1,9 @@
+"define"in window&&define("discourse/theme-15/pre-initializers/theme-15-translations",["exports"],(function(e){"use strict"
+Object.defineProperty(e,"__esModule",{value:!0}),e.default=void 0
+var t={name:"theme-15-translations",initialize(){const e={en:{}}
+for(let t in e){let i=I18n.translations
+for(let e of[t,"js","theme_translations"])i=i[e]=i[e]||{}
+i[15]=e[t]}}}
+e.default=t}))
+
+//# sourceMappingURL=96680c2e79f025f5e248e74311b8d69eb561b43d.map?__ws=forums.unrealengine.com

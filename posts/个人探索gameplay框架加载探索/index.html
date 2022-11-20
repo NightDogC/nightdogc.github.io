@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>【个人探索】尝试对虚幻加载流程做点笔记 - 极东夜狗之巢穴</title><meta name="Description" content="Unreal Engine, Unity3D, Game Design, Game Development"><meta property="og:title" content="【个人探索】尝试对虚幻加载流程做点笔记" />
+<meta property="og:description" content="警告 这是一个非计算机背景虚幻入门人员的个人探索，仅记录个人学习时想法和思考过程用，可能会看到各种奇奇怪怪的错误和“这不理所应当知道的知识？”" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/posts/%E4%B8%AA%E4%BA%BA%E6%8E%A2%E7%B4%A2gameplay%E6%A1%86%E6%9E%B6%E5%8A%A0%E8%BD%BD%E6%8E%A2%E7%B4%A2/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-11-09T21:26:40+08:00" />
+<meta property="article:modified_time" content="2022-11-09T21:26:40+08:00" /><meta property="og:site_name" content="极东夜狗之巢穴" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="【个人探索】尝试对虚幻加载流程做点笔记"/>
+<meta name="twitter:description" content="警告 这是一个非计算机背景虚幻入门人员的个人探索，仅记录个人学习时想法和思考过程用，可能会看到各种奇奇怪怪的错误和“这不理所应当知道的知识？”"/>
+<meta name="application-name" content="My cool site">
+<meta name="apple-mobile-web-app-title" content="My cool site"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="/posts/%E4%B8%AA%E4%BA%BA%E6%8E%A2%E7%B4%A2gameplay%E6%A1%86%E6%9E%B6%E5%8A%A0%E8%BD%BD%E6%8E%A2%E7%B4%A2/" /><link rel="prev" href="/posts/%E4%B8%AA%E4%BA%BA%E6%8E%A2%E7%B4%A2%E7%A0%94%E7%A9%B6%E4%B8%80%E4%B8%8B%E4%BF%9D%E5%AD%98%E6%B8%B8%E6%88%8F/" /><link rel="next" href="/posts/%E6%9D%82%E8%B0%88%E7%B3%BB%E5%88%97%E6%88%91%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%99%E4%B9%88%E8%8F%9C/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript>
+<link rel="stylesheet" href="/js/katex/katex.min.css" >
+<script src="/js/katex/katex.min.js" > </script>
+<script src="/js/katex/contrib/auto-render.min.js" ></script>
+ 
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        let hasContent = document.getElementsByClassName('toc')[0].getAttribute('class');
+        if (hasContent == null) {
+            return;
+        }
+        renderMathInElement(document.body);
+    });
+</script><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "【个人探索】尝试对虚幻加载流程做点笔记",
+        "inLanguage": "zh-cn",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "\/posts\/%E4%B8%AA%E4%BA%BA%E6%8E%A2%E7%B4%A2gameplay%E6%A1%86%E6%9E%B6%E5%8A%A0%E8%BD%BD%E6%8E%A2%E7%B4%A2\/"
+        },"genre": "posts","keywords": "Unreal, 个人探索, Gameplay框架, 引擎源码浅析, 生命周期, 内含有生之年, 基础","wordcount":  5653 ,
+        "url": "\/posts\/%E4%B8%AA%E4%BA%BA%E6%8E%A2%E7%B4%A2gameplay%E6%A1%86%E6%9E%B6%E5%8A%A0%E8%BD%BD%E6%8E%A2%E7%B4%A2\/","datePublished": "2022-11-09T21:26:40+08:00","dateModified": "2022-11-09T21:26:40+08:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "NightDog"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="极东夜狗之巢穴">极东夜狗之巢穴</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner">
+	                	<div class="dropdown">
+		                  	<a href="/posts/" class="menu-item menu-more dropbtn" title="" ><i class='fas fa-fw fa-archive'></i> 归档 
+		                	</a>
+		                	<div class="menu-more-content dropdown-content"><a href="/categories/" title="" ><i class='fas fa-fw fa-th'></i> 全部分类 </a><a href="/tags/" title="" ><i class='fas fa-fw fa-tag'></i> 所有标签 </a></div>
+		                </div>
+	                <a class="menu-item" href="/categories/unreal/"> Unreal学习笔记 
+		                </a>
+	                	<div class="dropdown">
+		                  	<a href="/categories/game/" class="menu-item menu-more dropbtn" title="" > 其他游戏相关 
+		                	</a>
+		                	<div class="menu-more-content dropdown-content"><a href="/categories/gamedesign/" title="" > 游戏设计相关 </a><a href="/categories/gamedev" title="" > 游戏开发相关 </a><a href="/categories/gamereview/" title="" > 游戏评论 </a><a href="/categories/personalwork" title="" > 个人游戏作品 </a></div>
+		                </div>
+	                <a class="menu-item" href="/categories/dev/"> 其它开发相关 
+		                </a>
+	                	<div class="dropdown">
+		                  	<a href="/categories/other/" class="menu-item menu-more dropbtn" title="" > 其它的其它 
+		                	</a>
+		                	<div class="menu-more-content dropdown-content"><a href="/categories/meme/" title="" > 弔图一堆 </a><a href="/categories/ramble" title="" > 杂谈一堆 </a></div>
+		                </div>
+	                <a class="menu-item" href="/quickpost/"> 查询精神状态 
+		                </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="极东夜狗之巢穴">极东夜狗之巢穴</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="Search titles or contents..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="Search">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="Clear">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        Cancel
+                    </a>
+                </div>
+                <div class="dropdown">
+                      <a href="/posts/" class="menu-item menu-more dropbtn" title="" ><i class='fas fa-fw fa-archive'></i> 归档 
+                    </a>
+                    <div class="menu-more-content dropdown-content"><a href="/categories/" title="" ><i class='fas fa-fw fa-th'></i> 全部分类 </a><a href="/tags/" title="" ><i class='fas fa-fw fa-tag'></i> 所有标签 </a></div>
+                </div>
+            <a class="menu-item" href="/categories/unreal/"> Unreal学习笔记 
+                </a>
+                <div class="dropdown">
+                      <a href="/categories/game/" class="menu-item menu-more dropbtn" title="" > 其他游戏相关 
+                    </a>
+                    <div class="menu-more-content dropdown-content"><a href="/categories/gamedesign/" title="" > 游戏设计相关 </a><a href="/categories/gamedev" title="" > 游戏开发相关 </a><a href="/categories/gamereview/" title="" > 游戏评论 </a><a href="/categories/personalwork" title="" > 个人游戏作品 </a></div>
+                </div>
+            <a class="menu-item" href="/categories/dev/"> 其它开发相关 
+                </a>
+                <div class="dropdown">
+                      <a href="/categories/other/" class="menu-item menu-more dropbtn" title="" > 其它的其它 
+                    </a>
+                    <div class="menu-more-content dropdown-content"><a href="/categories/meme/" title="" > 弔图一堆 </a><a href="/categories/ramble" title="" > 杂谈一堆 </a></div>
+                </div>
+            <a class="menu-item" href="/quickpost/"> 查询精神状态 
+                </a><a href="javascript:void(0);" class="menu-item theme-switch" title="Switch Theme">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">Contents</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">【个人探索】尝试对虚幻加载流程做点笔记</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>NightDog</a></span>&nbsp;<span class="post-category">included in <a href="/categories/unreal/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Unreal</a></span>&nbsp;with tags:&nbsp;<i class="fas fa-tags fa-fw" aria-hidden="true"></i><a href="/tags/unreal/">Unreal</a>,&nbsp;<a href="/tags/%E4%B8%AA%E4%BA%BA%E6%8E%A2%E7%B4%A2/">个人探索</a>,&nbsp;<a href="/tags/gameplay%E6%A1%86%E6%9E%B6/">Gameplay框架</a>,&nbsp;<a href="/tags/%E5%BC%95%E6%93%8E%E6%BA%90%E7%A0%81%E6%B5%85%E6%9E%90/">引擎源码浅析</a>,&nbsp;<a href="/tags/%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/">生命周期</a>,&nbsp;<a href="/tags/%E5%86%85%E5%90%AB%E6%9C%89%E7%94%9F%E4%B9%8B%E5%B9%B4/">内含有生之年</a>,&nbsp;<a href="/tags/%E5%9F%BA%E7%A1%80/">基础</a></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2022-11-09">2022-11-09</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;5653 words&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;12 minutes&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>Contents</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#综述">综述</a></li>
+    <li><a href="#官方文档actor-lifecyclegame-flow">官方文档——Actor Lifecycle、Game Flow</a></li>
+    <li><a href="#tom-looman---unreal-gameplay-framework-guide-for-c">Tom Looman - Unreal Gameplay Framework Guide for C++</a>
+      <ul>
+        <li><a href="#actor-和-actorcomponent">Actor 和 ActorComponent</a></li>
+        <li><a href="#playercontroller">PlayerController</a></li>
+        <li><a href="#pawn">Pawn</a></li>
+        <li><a href="#gamemodegamestateworldlevellevelscriptactorgameinstance">GameMode、GameState、World、Level、LevelScriptActor、GameInstance</a></li>
+        <li><a href="#playerstate">PlayerState</a></li>
+        <li><a href="#gameplaystatics">GameplayStatics</a></li>
+      </ul>
+    </li>
+    <li><a href="#the-unreal-engine-game-framework-from-int-main-to-beginplay">The Unreal Engine Game Framework: From int main() to BeginPlay</a>
+      <ul>
+        <li><a href="#bigbang-of-unreal-launch">BigBang of Unreal Launch</a></li>
+        <li><a href="#guardedmain-and-fengineloop">GuardedMain and FEngineLoop</a></li>
+        <li><a href="#preinit模块工程插件的加载类型系统的注册">PreInit——模块、工程、插件的加载、类型系统的注册</a></li>
+        <li><a href="#init实例化uengineugameengine">Init——实例化UEngine、UGameEngine</a></li>
+        <li><a href="#uengineinitugameinstanceugameviewportclientulocalplayer">UEngine::Init——UGameInstance、UGameViewportClient、ULocalPlayer</a></li>
+        <li><a href="#uenginestart分界线">UEngine::Start——分界线</a></li>
+        <li><a href="#uegineloadmapuworldulevel">UEgine::LoadMap——UWorld、ULevel</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><div class="details admonition warning open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-exclamation-triangle fa-fw" aria-hidden="true"></i>警告<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content">这是一个<strong>非计算机背景虚幻入门人员</strong>的个人探索，仅记录个人学习时想法和思考过程用，可能会看到各种奇奇怪怪的错误和“这不理所应当知道的知识？”，十分不建议参考。</div>
+        </div>
+    </div>
+<div class="details admonition failed open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-pencil-alt fa-fw" aria-hidden="true"></i>未完成<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content">本篇对于个人来说略微超纲，暂时停更</div>
+        </div>
+    </div>
+<h2 id="综述">综述</h2>
+<p>开坑一篇之前提到过的有生之年系列。</p>
+<p>在阅读完大钊老师的 <a href="https://zhuanlan.zhihu.com/p/22813908" target="_blank" rel="noopener noreffer ">Inside UE4</a> 的Gameplay架构篇章后，大体上对Unreal里这套构建游戏世界的组织架构有一个了解：</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="image/unreal/gameplayframework.jpg"
+        data-srcset="image/unreal/gameplayframework.jpg, image/unreal/gameplayframework.jpg 1.5x, image/unreal/gameplayframework.jpg 2x"
+        data-sizes="auto"
+        alt="image/unreal/gameplayframework.jpg"
+        title="Unreal Gameplay Framework" /></p>
+<p>但是不可避免的，在实践上还有很多细节问题需要得到解决，其中最困惑的一个问题就是这些玩意的生命周期了，比如，在Actor的Constructor和BeginPlay里拿到GM、GS的引用会有什么区别？在Actor的Constructor、BeginPlay、ClassDefaults、InstanceDefaults里设置PROPERTY参数有什么区别？PlayerController在什么时候能拿到PlayerState以便让UI获取到一些数据？我在什么时候可以开始对UWorld里的Actor迭代了？在我观摩一些直接用sdl2写的游戏项目或者引擎的时候，发现都有一些整个游戏的核心Loop，那么Unreal的Loop在那里？甚至说， “<code>int main()</code>” 在哪里？</p>
+<p>虚幻官方有文档对此进行说明，能解决一些问题，但不多，比如前面的一些简单的问题：</p>
+<p><a href="https://docs.unrealengine.com/4.26/en-US/ProgrammingAndScripting/ProgrammingWithCPP/UnrealArchitecture/Actors/ActorLifecycle/" target="_blank" rel="noopener noreffer ">Actor Lifecycle</a></p>
+<p><a href="https://docs.unrealengine.com/4.27/en-US/InteractiveExperiences/Framework/GameFlow/" target="_blank" rel="noopener noreffer ">Game Flow Overview</a></p>
+<p>光是看完这些，还是有一些困惑，比如GM、GS、PC、PS等等都是Actor，它们之间的关联如何进行的呢？</p>
+<p>GM里有StartPlay和StartMatch，这两个又是什么区别？</p>
+<p>等等。</p>
+<p>根据我的水平，我能想到的一个笨方法是，在源码里找出相关部分，都给打上Log……</p>
+<p>不过这好像有点不现实，光是AActor的代码就有4000行，还是先来看看别人怎么说的吧，目前而言我找到了下面两个东西，看起来有点用，一会进一步阅读：</p>
+<p><a href="https://www.tomlooman.com/unreal-engine-gameplay-framework/" target="_blank" rel="noopener noreffer ">Tom Looman - Unreal Gameplay Framework Guide for C++</a>（怎么又是你）</p>
+<p><a href="https://www.youtube.com/watch?v=IaU2Hue-ApI" target="_blank" rel="noopener noreffer ">Alex Forsythe - The Unreal Engine Game Framework: From int main() to BeginPlay</a></p>
+<p>我决定一边看着这些，一边给源码打上Log</p>
+<h2 id="官方文档actor-lifecyclegame-flow">官方文档——Actor Lifecycle、Game Flow</h2>
+<p>在此之前，推荐先对官方文档进行一下速览，对整体的流程有一个大概的了解，这里也将两张图片放上来：</p>
+<p><figure><a class="lightgallery" href="https://docs.unrealengine.com/4.26/Images/ProgrammingAndScripting/ProgrammingWithCPP/UnrealArchitecture/Actors/ActorLifecycle/ActorLifeCycle1.png" title="Actor Lifecycle" data-thumbnail="https://docs.unrealengine.com/4.26/Images/ProgrammingAndScripting/ProgrammingWithCPP/UnrealArchitecture/Actors/ActorLifecycle/ActorLifeCycle1.png" data-sub-html="<h2>Actor Lifecycle</h2><p>Actor Lifecycle</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="https://docs.unrealengine.com/4.26/Images/ProgrammingAndScripting/ProgrammingWithCPP/UnrealArchitecture/Actors/ActorLifecycle/ActorLifeCycle1.png"
+            data-srcset="https://docs.unrealengine.com/4.26/Images/ProgrammingAndScripting/ProgrammingWithCPP/UnrealArchitecture/Actors/ActorLifecycle/ActorLifeCycle1.png, https://docs.unrealengine.com/4.26/Images/ProgrammingAndScripting/ProgrammingWithCPP/UnrealArchitecture/Actors/ActorLifecycle/ActorLifeCycle1.png 1.5x, https://docs.unrealengine.com/4.26/Images/ProgrammingAndScripting/ProgrammingWithCPP/UnrealArchitecture/Actors/ActorLifecycle/ActorLifeCycle1.png 2x"
+            data-sizes="auto"
+            alt="https://docs.unrealengine.com/4.26/Images/ProgrammingAndScripting/ProgrammingWithCPP/UnrealArchitecture/Actors/ActorLifecycle/ActorLifeCycle1.png" />
+    </a><figcaption class="image-caption">Actor Lifecycle</figcaption>
+    </figure></p>
+<p><figure><a class="lightgallery" href="https://docs.unrealengine.com/4.26/Images/InteractiveExperiences/Framework/GameFlow/GameFlowChart.png" title="Game Flow" data-thumbnail="https://docs.unrealengine.com/4.26/Images/InteractiveExperiences/Framework/GameFlow/GameFlowChart.png" data-sub-html="<h2>Game Flow</h2><p>Game Flow</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="https://docs.unrealengine.com/4.26/Images/InteractiveExperiences/Framework/GameFlow/GameFlowChart.png"
+            data-srcset="https://docs.unrealengine.com/4.26/Images/InteractiveExperiences/Framework/GameFlow/GameFlowChart.png, https://docs.unrealengine.com/4.26/Images/InteractiveExperiences/Framework/GameFlow/GameFlowChart.png 1.5x, https://docs.unrealengine.com/4.26/Images/InteractiveExperiences/Framework/GameFlow/GameFlowChart.png 2x"
+            data-sizes="auto"
+            alt="https://docs.unrealengine.com/4.26/Images/InteractiveExperiences/Framework/GameFlow/GameFlowChart.png" />
+    </a><figcaption class="image-caption">Game Flow</figcaption>
+    </figure></p>
+<h2 id="tom-looman---unreal-gameplay-framework-guide-for-c">Tom Looman - Unreal Gameplay Framework Guide for C++</h2>
+<p>通读下来，这一篇标记了很多Gameplay框架类的用法、获取方法、谁来负责创建，其中谁来负责创建是对这篇主题来说很有用的，因此这里先主要关注这个，其余的内容也非常有价值，我会挑选一些我自己没能理解到的地方记录下来，其它部分有空再说吧，知乎上有一篇该文的翻译，不过翻译得实在不是很好，就不搬运了</p>
+<h3 id="actor-和-actorcomponent">Actor 和 ActorComponent</h3>
+<ul>
+<li>如果要进行网络复制，Actor的API是 <code>SetReplicates(true)</code> ，而Component的API则是 <code>SetIsReplicated(true)</code></li>
+<li><code>CreateDefaultSubobject\&lt;T&gt;()</code> 但没有SetupAttachment的ActorComponent依然会被该Actor注册，可以通过MyActor-&gt;GetComponentByClass获取</li>
+<li>但是通过 <code>NewObject&lt;UActorComponent&gt;</code> 动态创建的Component需要进行注册：</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="n">UActorComponent</span><span class="o">*</span> <span class="n">SpawnedComponent</span> <span class="o">=</span> <span class="n">NewObject</span><span class="o">&lt;</span><span class="n">UActorComponent</span><span class="o">&gt;</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="n">UStaticMeshComponent</span><span class="o">::</span><span class="n">StaticClass</span><span class="p">(),</span> <span class="n">TEXT</span><span class="p">(</span><span class="s">&#34;DynamicSpawnedMeshCompoent&#34;</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="n">SpawnedComponent</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">SpawnedComponent</span><span class="o">-&gt;</span><span class="n">RegisterComponent</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>顺带一提，敲了两下代码试了一下， <code>ConstructorHelper</code> 和 <code>CreateDefaultSubobject&lt;T&gt;()</code> 只能在Constructor中使用，如果需要动态加载Component，方法是：
+<ul>
+<li>得用 <code>NewObject\&lt;T&gt;()</code> ，然后 <code>RegisterComponent()</code></li>
+<li>然后，如果需要加载资源， <code>LoadObject\&lt;T&gt;()</code> 和 <code>FindObject\&lt;T&gt;()</code></li>
+<li>或者，软指针： <code>TSoftObjectPtr\&lt;T&gt;()</code> 和 <code>TSoftClassPtr\&lt;T&gt;()</code></li>
+<li>不继承自USceneComponent的ActorComponent无法 <code>SetupAttachment()</code> ，如果需要在实例上编辑Details，使用 <code>AddInstanceComponent()</code></li>
+<li>具体使用，详见这篇Nuggets：</li>
+</ul>
+</li>
+</ul>
+<p>目前个人的猜测是和一些CDO相关的指针操作有关（不在Constructor里用 <code>CreatDefaultSubobject\&lt;T&gt;()</code> 和 <code>ConstructorHelper</code> 会导致编辑器Crash，很像是因为空指针报错）</p>
+<p>好像偏题了，Actor的生命周期其实完全参考官方文档就行了，Tom Looman老师也只是甩了一篇官方文档的链接</p>
+<p>至于ActorComponent，刚才快速F12了几下，除了 <code>NewObject\&lt;T&gt;()</code> 和创建的生命周期相关以外，好像和 <code>RegisterComponent()</code> 也很有关系，有空做一篇Actor和ActorComponent源码剖析，已加入有生之年豪华套餐</p>
+<p>另外软指针和异步加载也是个坑，加入，都可以加入</p>
+<h3 id="playercontroller">PlayerController</h3>
+<p>Controller类和网络、AI、Input有非常紧密的联系，PlayerContoller则还有PlayerCameraManager，不仅管理相机，也涉及到渲染，也就是说……这都是一个个有生之年系列</p>
+<p>不过重点还是生命周期，那么PlayerController的Spawn位于GameModeBase里的 <code>Login()</code> !</p>
+<h3 id="pawn">Pawn</h3>
+<p>在GameModeBase里的<code>SpawnDefaultPawnAtTransform()</code>里被生成</p>
+<h3 id="gamemodegamestateworldlevellevelscriptactorgameinstance">GameMode、GameState、World、Level、LevelScriptActor、GameInstance</h3>
+<p>没说在哪里被Spawn的</p>
+<ul>
+<li>除非真的需要使用GameSessions、在关卡之间传递一些东西、真的需要重载GameInstance的一些功能，不要轻易在GameInstance里写逻辑，早年这里可以写一些保存游戏和UI的逻辑，但是现在UI有UMG，保存游戏有Subsystem，所以尽量Keep GI clean</li>
+</ul>
+<h3 id="playerstate">PlayerState</h3>
+<p>在GameModeBase中调用Controller的静态方法 <code>InitPlayerState()</code> 生成</p>
+<h3 id="gameplaystatics">GameplayStatics</h3>
+<p>最后提一下这个，这玩意里面好用的方法太多了，有必要开个有生之年</p>
+<h2 id="the-unreal-engine-game-framework-from-int-main-to-beginplay">The Unreal Engine Game Framework: From int main() to BeginPlay</h2>
+<p>这个篇章，理论上每个小标题都能写一篇大文章，个人能力有限，只能照着视频做做笔记，简略带过了</p>
+<h3 id="bigbang-of-unreal-launch">BigBang of Unreal Launch</h3>
+<p>打开Engine模块的Launch.cpp，顺着 <code>Init()</code> 和 <code>Tick()</code> 摸到LacunEngineLoop.cpp，再顺着各种方法和委托摸下去，你会看到二十年前的软件工程师们留下的数千行代码——能完美地运行，而你绝对不会想动它们，甚至也不会想去看它们</p>
+<p>它们在你正式打开游戏之前跑上一遍，整个过程就如同宇宙大爆炸一般，在执行完如此多的判断和配置之后，一个游戏世界才真正展现在你的面前：</p>
+<p><figure><a class="lightgallery" href="/image/unreal/unrealbigbang.gif" title="Unreal BigBang" data-thumbnail="/image/unreal/unrealbigbang.gif" data-sub-html="<h2>图片截取自视频</h2><p>Unreal BigBang</p>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/image/unreal/unrealbigbang.gif"
+            data-srcset="/image/unreal/unrealbigbang.gif, /image/unreal/unrealbigbang.gif 1.5x, /image/unreal/unrealbigbang.gif 2x"
+            data-sizes="auto"
+            alt="/image/unreal/unrealbigbang.gif" />
+    </a><figcaption class="image-caption">图片截取自视频</figcaption>
+    </figure></p>
+<p>如果有看完大钊老师的InsideUE，在这个BigBang的后期能发现不少感觉很熟悉的东西，但是不管怎样，先从看到的第一个东西说起：</p>
+<h3 id="guardedmain-and-fengineloop">GuardedMain and FEngineLoop</h3>
+<p>去掉那些无关的东西，我们发现在GuardedMain这个入口函数实际上干的大事有这些——都是派FEngineLoop这个类去干各种各样的事情：</p>
+<blockquote>
+<ul>
+<li><code>GEngineLoop.PreInit()</code> // Run early initialization, load engine modules</li>
+<li><code>GEngineLoop.Init()</code> // Create and initialize UEngine, run late initialization, start the game</li>
+<li><code>GEngineLoop.Tick()</code> // Kick off renderting, tick engine and update RHI every frame</li>
+<li><code>GEngineLoop.Exit()</code> // Exit until tick stopped, run clean up</li>
+</ul>
+</blockquote>
+<h3 id="preinit模块工程插件的加载类型系统的注册">PreInit——模块、工程、插件的加载、类型系统的注册</h3>
+<p>在 <code>PreInit()</code>里，主要完成了加载引擎、工程、插件和模块的任务。</p>
+<p>注意到，在.uplugin和.uporjcet文件里可以设置LoadingPhase（ `&ldquo;LoadingPhase&rdquo; : &ldquo;EarliestPossible/PostConfigInit/PostSplashScreen/&hellip;&quot;，在Projects/ModuleDescriptor.h可以查看ELoadingPhase::Type的详细注释），而越重要的核心模块，会越先被加载：</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/image/unreal/loadmodules.png"
+        data-srcset="/image/unreal/loadmodules.png, /image/unreal/loadmodules.png 1.5x, /image/unreal/loadmodules.png 2x"
+        data-sizes="auto"
+        alt="/image/unreal/loadmodules.png"
+        title="FEngineLoop::PreInit" /></p>
+<p>在加载完上述的模块、工程和插件后，你自己的游戏的各个模块已经加载完毕，即一切基本功能都已经加载并初始化完毕，只不过还不是一个具体的游戏的状态，也就是说，引擎已经拿到了所有构建你的游戏的必要的工具，拿着这些工具，迟早能把你的游戏构建出来</p>
+<p>当一个模块被加载时，引擎会将模块中定义到的UObject类型注册一遍，以便让反射系统知晓，并对每个类型构建出CDO，具体过程可以在gen.cpp文件中看到</p>
+<p>当类型系统将全部的类注册完毕之后，这个模块实现的IModuleInterface接口中的 <code>StartupModule()</code>（与之对应的是 <code>ShutdownModule()</code> ）会被引擎调用，至此，完成模块的加载</p>
+<h3 id="init实例化uengineugameengine">Init——实例化UEngine、UGameEngine</h3>
+<p><code>Init()</code> 的主要内容就比较直接了，在通过配置文件拿到UGameEngineClass的类型后，直接一个 <code>NewObject&lt;UEngine&gt;()</code> 就将游戏的最高管理员创建了出来——当然没有这么简单</p>
+<p>毕竟只有一个UEngine，一个管的东西都没有并不能算是管理员，接下来FEngineLoop便会调用UEngine的 <code>Init()</code> ，用于生成UGameInstance……以及在这个过程中生成和UGameInstance同级别的如ULocalPlayer（以及UGameViewportClient），再通过一个委托将这件事通知出去</p>
+<p>随后，配置为PostEngineInit的模块和插件会在这里被加载，也有一些Unreal自己的模块会被放在这里加载</p>
+<p>最后，调用UEnigine的 <code>Start()</code> ，一切准备工作就绪，可以标记 <code>GIsRunning</code> 为 <code>true</code> 了，顺带把这件事也通知出去</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/image/unreal/initengine.png"
+        data-srcset="/image/unreal/initengine.png, /image/unreal/initengine.png 1.5x, /image/unreal/initengine.png 2x"
+        data-sizes="auto"
+        alt="/image/unreal/initengine.png"
+        title="FEngineLoop::Init" /></p>
+<h3 id="uengineinitugameinstanceugameviewportclientulocalplayer">UEngine::Init——UGameInstance、UGameViewportClient、ULocalPlayer</h3>
+<p>在UEngine的初始化阶段，抛开那些支线，有三个主线任务要做：</p>
+<ul>
+<li>Create UGameInstance，紧接着让GameInstance去Create FWorldContext、dummy UWorld（先做一个假的World出来，以防一个Wolrd也没有）和Subsystem</li>
+<li>Create UGameViewportClient，并初始化它</li>
+<li>Create ULocalPlayer，并让它和UGameViewportClient关联：
+<ul>
+<li>Engine调用GameViewportClient的 <code>SetupInitialLocaPlayer</code> （这个在PlayLevel里也被调用，用于PIE，也基本上是在同样的加载流程时调用），主要是生成了一个ViewportConsole，然后获取到Viewport的GameInstance实例，调用它的 <code>CreateInitialPlayer()</code></li>
+<li><code>CreateInitialPlayer()</code> 中直接调用 <code>CreatLocalPlayer()</code>，在这一步才真正开始生成一个ULocalPlayer，之后ULocalPlayer会进行一些如设置Controller ID的逻辑</li>
+</ul>
+</li>
+</ul>
+<h3 id="uenginestart分界线">UEngine::Start——分界线</h3>
+<p>事实上在 <code>UEngine::Start()</code> 里只有一件事——调用 <code>UGameInstance::StartGameInstance()</code> ，这个过程中会进行Browse Map</p>
+<p>在Browse之前，UGameInstance会调用 <code>GetGameDefaultMap()</code> 通过配置ini拿到Map的包名，在完成这一切后（Engine开始Start了，Map也拿到了只是还没有加载），UGameInstance会调用 <code>OnStart()</code> 这个没有实现，提供重写的虚方法，因为这个时间点是一个分界线——<strong>在这之前，所有的Engine Objects已经全部加载完毕（UGameEngine、UGameInstance、UGameViewportClient、ULocalPlayer），而接下来要开始加载Game Objects了，也就是UWorld和UWorld层级以下的那些东西——那些不能在关卡之间跨越，会随着切换关卡消失的东西（先不讨论Seamless Travel）</strong>，如果你有什么事情赶在这个时候做，在自己的GameInstance类里重写OnStart吧</p>
+<h3 id="uegineloadmapuworldulevel">UEgine::LoadMap——UWorld、ULevel</h3>
+<p>是的，尽管WorldContext由GameInstance管理，但LoadMap是个属于UEngine的的能力，而且是个十分重要的能力</p>
+<p>顺便再说一下UEngine的Browse的能力—— <code>virtual EBrowseReturnVal::Type Browse( FWorldContext&amp; WorldContext, FURL URL, FString&amp; Error );</code> ，通过URL可以从服务器上拿到Map，也可以从本地拿到</p>
+<p>接下来正式看看 <code>UEgine::LoadMap()</code> 这个近六百行的方法有哪些主线任务：</p>
+<ul>
+<li><code>FCoreUObjectDelegates::PreLoadMap.Broadcast(URL.Map);</code> ，在准备加载地图之前通知，也有一个结构体用于</li>
+<li>解决上一个地图留下来的一些东西，如 <code>UTexture2D::CancelPendingTextureStreaming();</code> 取消上一个地图还未处理的流送请求， <code>CleanupPackagesToFullyLoad()</code> 等等</li>
+<li>记录开始时间</li>
+<li>Unload当前World，清除网络，将UPlayer和当前World的PlayerController的联系切断，将玩家控制的Pawn、PlayerControllers销毁，让所有Actor调用自己的 <code>EndPlay()</code>，然后通通Destroy</li>
+<li>声明新的UWorld和UPackage（WorldPackage）指针并设为NULL</li>
+<li><code>WorldContext.OwningGameInstance-&gt;PreloadContentForURL(URL);</code> 通知GameInstance准备换图，如果要加载资源的话可以加载了，这也是一个没有实现的虚方法，供重写用，把握好调用时机：新图还是个NULL，里面啥也没有，即正式加载新图之前</li>
+<li>在内存或磁盘找Map包，将其放进WorldPackage里</li>
+<li><code>NewWorld = UWorld::FindWorldInPackage(WorldPackage);</code> ，将包里的Map安排上，并且这意味着这个图就是这个World的<strong>PersistentLevel</strong>了</li>
+<li>处理一些没找到包或图的情况</li>
+<li>处理一些PIE的情况</li>
+<li>将World的Reference交给GameInstance（里的<strong>WorldContext.OwingGameInstance</strong>）</li>
+<li>将World的Reference赋给全局变量 <code>GWorld</code></li>
+<li><code>WorldContext.SetCurrentWorld(NewWorld);</code> ，把World在GameInstance注册上</li>
+<li><code>WorldContext.World()-&gt;WorldType = WorldContext.WorldType;</code> 、 <code>WorldContext.World()-&gt;AddToRoot();</code> 、 ，为World做一些准备工作</li>
+<li><code>WorldContext.World()-&gt;InitWorld();</code> ，World生命周期的Subsystem在这里初始化，然后准备一些AI和Navigation系统，将主关卡加入关卡Array并设为自己，初始化物理、声音等等，最后调用WorldSubsystem的 <code>PostInitialize()</code> ——也是一个没有实现可重写的虚方法，注意调用时机，和 <code>OnWorldBeginPlay()</code> 区分开来，最后 <code>BoardcastLevelsChanged()</code>，且 <code>bIsWorldInitialized</code> 为 <code>true</code> 标志着World初始化完成</li>
+<li><code>WorldContext.World()-&gt;SetGameMode(URL);</code> ，终于来到了GameMode的Spawn，这是一个UGameInstance里的方法，细说一下
+<ul>
+<li>最开始调用 <code>GetGameInstance()-&gt;CreateGameModeForURL(InURL, this)</code> ，毕竟GameMode只属于服务器，方法里面会根据URL和一些配置信息拿到GameMode</li>
+<li>具体是，通过URL找到World的包，根据里面的World的WorldSettings的DefaultGameMode设置，拿到Class类型信息（即TSubclassOf）</li>
+<li>其次，这个过程中有一系列判断，如果加载不成功，首先会去拿全局设置的GameMode（Project Settings里的）</li>
+<li>如果拿到了，尝试调用 <code>GameInstance::OverrideGameModeClass()</code> ，看看GameInstance要不要覆盖它</li>
+<li>如果拿不到，直接用GameModeBase</li>
+<li>最后使用 <code>SpawnActor&lt;AGameModeBase&gt;()</code></li>
+<li>之后GM作为Actor，就是走SpawnActor那一套生命周期了，在这里面GameMode会干不少事，后面详述</li>
+<li>回到 <code>SetGameMode(URL)</code>，最后将GameMode设为World的 <code>AuthorityGameMode</code></li>
+</ul>
+</li>
+<li>在渲染任何东西之前，保证全局的Sharder</li>
+<li><code>LoadPackagesFully(WorldContext.World(), FULLYLOAD_Map, WorldContext.World()-&gt;PersistentLevel-&gt;GetOutermost()-&gt;GetName());</code> // Load any per-map packages</li>
+<li><code>WorldContext.World()-&gt;FlushLevelStreaming(EFlushLevelStreamingType::Visibility);</code> // Make sure &ldquo;always loaded&rdquo; sub-levels are fully loaded</li>
+<li>`</li>
+</ul>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>Updated on 2022-11-09</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="Share on Twitter" data-sharer="twitter" data-url="/posts/%E4%B8%AA%E4%BA%BA%E6%8E%A2%E7%B4%A2gameplay%E6%A1%86%E6%9E%B6%E5%8A%A0%E8%BD%BD%E6%8E%A2%E7%B4%A2/" data-title="【个人探索】尝试对虚幻加载流程做点笔记" data-hashtags="Unreal,个人探索,Gameplay框架,引擎源码浅析,生命周期,内含有生之年,基础"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Facebook" data-sharer="facebook" data-url="/posts/%E4%B8%AA%E4%BA%BA%E6%8E%A2%E7%B4%A2gameplay%E6%A1%86%E6%9E%B6%E5%8A%A0%E8%BD%BD%E6%8E%A2%E7%B4%A2/" data-hashtag="Unreal"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Hacker News" data-sharer="hackernews" data-url="/posts/%E4%B8%AA%E4%BA%BA%E6%8E%A2%E7%B4%A2gameplay%E6%A1%86%E6%9E%B6%E5%8A%A0%E8%BD%BD%E6%8E%A2%E7%B4%A2/" data-title="【个人探索】尝试对虚幻加载流程做点笔记"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on Line" data-sharer="line" data-url="/posts/%E4%B8%AA%E4%BA%BA%E6%8E%A2%E7%B4%A2gameplay%E6%A1%86%E6%9E%B6%E5%8A%A0%E8%BD%BD%E6%8E%A2%E7%B4%A2/" data-title="【个人探索】尝试对虚幻加载流程做点笔记"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="Share on 微博" data-sharer="weibo" data-url="/posts/%E4%B8%AA%E4%BA%BA%E6%8E%A2%E7%B4%A2gameplay%E6%A1%86%E6%9E%B6%E5%8A%A0%E8%BD%BD%E6%8E%A2%E7%B4%A2/" data-title="【个人探索】尝试对虚幻加载流程做点笔记"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/unreal/">Unreal</a>,&nbsp;<a href="/tags/%E4%B8%AA%E4%BA%BA%E6%8E%A2%E7%B4%A2/">个人探索</a>,&nbsp;<a href="/tags/gameplay%E6%A1%86%E6%9E%B6/">Gameplay框架</a>,&nbsp;<a href="/tags/%E5%BC%95%E6%93%8E%E6%BA%90%E7%A0%81%E6%B5%85%E6%9E%90/">引擎源码浅析</a>,&nbsp;<a href="/tags/%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/">生命周期</a>,&nbsp;<a href="/tags/%E5%86%85%E5%90%AB%E6%9C%89%E7%94%9F%E4%B9%8B%E5%B9%B4/">内含有生之年</a>,&nbsp;<a href="/tags/%E5%9F%BA%E7%A1%80/">基础</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">Back</a></span>&nbsp;|&nbsp;<span><a href="/">Home</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/%E4%B8%AA%E4%BA%BA%E6%8E%A2%E7%B4%A2%E7%A0%94%E7%A9%B6%E4%B8%80%E4%B8%8B%E4%BF%9D%E5%AD%98%E6%B8%B8%E6%88%8F/" class="prev" rel="prev" title="【个人探索】研究一下保存游戏的设计与实现细节（基础篇）"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>【个人探索】研究一下保存游戏的设计与实现细节（基础篇）</a>
+            <a href="/posts/%E6%9D%82%E8%B0%88%E7%B3%BB%E5%88%97%E6%88%91%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%99%E4%B9%88%E8%8F%9C/" class="next" rel="next" title="【杂谈系列】我为什么这么菜？？？">【杂谈系列】我为什么这么菜？？？<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.105.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">NightDogC</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="Back to Top">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="View Comments">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/algoliasearch@4.13.1/dist/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"Copy to clipboard","maxShownLines":50},"search":{"algoliaAppID":"KJIM11MKHB","algoliaIndex":"Blog","algoliaSearchKey":"3b26d56f84469fd1c614a710d39a0419","highlightTag":"em","maxResultLength":15,"noResultsFound":"No results found","snippetLength":30,"type":"algolia"}};</script><script type="text/javascript" src="/js/theme.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery@2.1.3/dist/jquery.min.js"></script><script type="text/javascript" src="/js/custom.js"></script></body>
+</html>

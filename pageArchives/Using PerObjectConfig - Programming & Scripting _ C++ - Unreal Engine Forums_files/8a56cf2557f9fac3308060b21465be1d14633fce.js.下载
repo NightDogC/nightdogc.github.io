@@ -1,0 +1,17 @@
+"require"in window&&require("discourse/lib/theme-settings-store").registerSettings(17,{available_locales:"en: English|fr: Français|es: Español|pt_BR: Português (Brasil)|ko: 한국어|ja: 日本語|zh_CN: 简体中文",icon_color:"#a6a7ae",icon_hover_color:"#fff",locale_cookie_name:"locale"}),"define"in window&&define("discourse/theme-17/components/locale-switcher",["exports","@ember/component","discourse/lib/cookie","discourse/lib/ajax","@ember/object","discourse-common/utils/decorators"],(function(e,t,o,l,i,s){"use strict"
+var c
+function a(e,t,o,l,i){var s={}
+return Object.keys(l).forEach((function(e){s[e]=l[e]})),s.enumerable=!!s.enumerable,s.configurable=!!s.configurable,("value"in s||s.initializer)&&(s.writable=!0),s=o.slice().reverse().reduce((function(o,l){return l(e,t,o)||o}),s),i&&void 0!==s.initializer&&(s.value=s.initializer?s.initializer.call(i):void 0,s.initializer=void 0),void 0===s.initializer&&(Object.defineProperty(e,t,s),s=null),s}Object.defineProperty(e,"__esModule",{value:!0}),e.default=void 0
+const r=require("discourse/lib/theme-settings-store").getObjectForTheme(17),n=r.locale_cookie_name
+var u=t.default.extend((c={tagName:"",_userLocale:"",locales(){let e=r.available_locales.split("|"),t=[]
+return e.forEach((e=>{let o=e.split(": "),l={name:o[1],value:o[0]}
+t.push(l)})),t},_getLocale(){this.isDestroying||this.isDestroyed||!this.currentUser||this.currentUser.findDetails().then((e=>{this.set("_userLocale",e.locale),(0,o.default)(n)&&(0,o.default)(n)!==e.locale&&this._setLocale((0,o.default)(n),!1)}))},_setLocale(e,t){if(this.currentUser){let o="/u/".concat(this.currentUser.username.toLowerCase(),".json");(0,l.ajax)(o,{type:"PUT",data:{locale:e}}).then((()=>{this._setLocaleCookie(e,t)}))}else this._setLocaleCookie(e,t)},_setLocaleCookie(e,t){t&&(0,o.default)(n,e),window.location.reload()},didInsertElement(){this._super(...arguments),this._getLocale()},setLocale(e){e&&this._setLocale(e,!0)}},a(c,"locales",[(0,s.default)()],Object.getOwnPropertyDescriptor(c,"locales"),c),a(c,"setLocale",[i.action],Object.getOwnPropertyDescriptor(c,"setLocale"),c),c))
+e.default=u})),"define"in window&&define("discourse/theme-17/discourse/templates/connectors/custom-locale-switcher/locale-switcher-connector",["exports","@ember/template-factory"],(function(e,t){"use strict"
+Object.defineProperty(e,"__esModule",{value:!0}),e.default=void 0
+var o=(0,t.createTemplateFactory)({id:null,block:'[[[1,[34,0]],[1,"\\n"]],[],false,["locale-switcher"]]',moduleName:"discourse/theme-17/discourse/templates/connectors/custom-locale-switcher/locale-switcher-connector",isStrictMode:!1})
+e.default=o})),"define"in window&&define("discourse/theme-17/discourse/templates/components/locale-switcher",["exports","@ember/template-factory"],(function(e,t){"use strict"
+Object.defineProperty(e,"__esModule",{value:!0}),e.default=void 0
+var o=(0,t.createTemplateFactory)({id:null,block:'[[[1,[28,[35,0],null,[["content","valueAttribute","onSelect","locale","class","options"],[[33,1],"value",[28,[37,2],[[30,0],"setLocale"],null],[33,3],"custom-locale-dropdown",[28,[37,4],null,[["caretUpIcon","caretDownIcon"],["globe","globe"]]]]]]],[1,"\\n"]],[],false,["combo-box","locales","action","value","hash"]]',moduleName:"discourse/theme-17/discourse/templates/components/locale-switcher",isStrictMode:!1})
+e.default=o}))
+
+//# sourceMappingURL=8a56cf2557f9fac3308060b21465be1d14633fce.map?__ws=forums.unrealengine.com
